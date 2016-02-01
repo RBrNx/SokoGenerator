@@ -22,3 +22,5 @@ HEADERS  += mainwindow.h \
     sokosolver.h
 
 FORMS    += mainwindow.ui
+
+win32: RC_ICONS = SokoGenerator.ico

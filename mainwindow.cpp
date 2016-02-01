@@ -5,12 +5,17 @@
 #include <QtGui>
 #include <QMessageBox>
 
+SokoGenerator Generator;
+
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
     ui->label_GenerationTime->setText("Estimated Generation Time: 0 Hours 0 Minutes");
     ui->progressBar->setValue(0);
+
+    connect(&Generator, SIGNAL(changeProgressBar(float)), this, SLOT(changeProgressBar(float)));
+
 }
 
 MainWindow::~MainWindow()
@@ -18,32 +23,36 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::changeProgressBar(float value){
+    ui->progressBar->setValue(value);
+}
+
 void MainWindow::on_combo_Levels_activated(int index)
 {
-    SokoGenerator::setLevels(index);
+    Generator.setLevels(index);
 }
 
 void MainWindow::on_combo_RoomH_activated(int index)
 {
-    SokoGenerator::setRoomHeight(index);
+    Generator.setRoomHeight(index + 4);
 }
 
 void MainWindow::on_combo_RoomW_activated(int index)
 {
-    SokoGenerator::setRoomWidth(index);
+    Generator.setRoomWidth(index + 4);
 }
 
 void MainWindow::on_combo_Boxes_activated(int index)
 {
-    SokoGenerator::setBoxes(index);
+    Generator.setBoxes(index);
 }
 
 void MainWindow::on_combo_Difficulty_activated(int index)
 {
-    SokoGenerator::setDifficulty(index);
+    Generator.setDifficulty(index);
 }
 
 void MainWindow::on_generateButton_released()
 {
-    SokoGenerator::generateLevel();
+    Generator.generateLevel();
 }

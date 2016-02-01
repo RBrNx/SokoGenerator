@@ -1,5 +1,7 @@
 #include "mainwindow.h"
+#include "sokogenerator.h"
 #include <QApplication>
+#include <QProgressBar>
 
 int main(int argc, char *argv[])
 {

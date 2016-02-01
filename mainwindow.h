@@ -30,6 +30,9 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+
+private slots:
+    void changeProgressBar(float);
 };
 
 #endif // MAINWINDOW_H
