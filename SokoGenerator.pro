@@ -13,8 +13,12 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    sokogenerator.cpp \
+    sokosolver.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    sokogenerator.h \
+    sokosolver.h
 
 FORMS    += mainwindow.ui
