@@ -33,7 +33,7 @@ void SokoGenerator::generateLevel(){
         updatePercentage(perc);
     }
 
-
+    listLevelSet(levels);
 }
 
 void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, int difficulty, int levelNumber){
@@ -45,10 +45,48 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
     if(noOfBoxes == 0){ _Boxes = randomNumber(1, 4); } else { _Boxes = noOfBoxes; }
     if(difficulty == 0){ _difficulty = randomNumber(1, 5); } else { _difficulty = difficulty; }
 
-    QMessageBox::information(NULL, "Information", "Generated Level: " + QString::number(levelNumber) + "\n Room Width: " + QString::number(_roomW) + "\n Room Height: "
-                             + QString::number(_roomH) + "\n No of Boxes: " + QString::number(_Boxes) + "\n Difficulty: " + QString::number(_difficulty));
+    //QMessageBox::information(NULL, "Information", "Generated Level: " + QString::number(levelNumber) + "\n Room Width: " + QString::number(_roomW) + "\n Room Height: "
+                             //+ QString::number(_roomH) + "\n No of Boxes: " + QString::number(_Boxes) + "\n Difficulty: " + QString::number(_difficulty));
+
+    Level newLevel;
+
+    initLevel(&newLevel, _roomW, _roomH);
+
+    levels.push_back(newLevel);
+
+}
+
+void SokoGenerator::initLevel(SokoGenerator::Level *level, int roomWidth, int roomHeight){
+    std::vector<char> row;
+
+    for(int y = 0; y < roomHeight; y++){
+
+        for(int x = 0; x < roomWidth; x++){
+
+            if(y == 0 || y == roomHeight-1 || x == 0 || x == roomWidth-1){
+                row.push_back(WALL);
+            }
+            else{
+                row.push_back(FLOOR);
+            }
+
+        }
+
+        level->grid.push_back(row);
+        row.clear();
+    }
+}
+
+void SokoGenerator::clearVectors(){
+    levels.clear();
 }
 
 void SokoGenerator::updatePercentage(float value){
     emit changeProgressBar(value);
+}
+
+void SokoGenerator::listLevelSet(std::vector<Level> levels){
+    for(int i = 0; i < levels.size(); i++){
+         emit addToList(i + 1);
+    }
 }

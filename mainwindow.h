@@ -2,6 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTCore>
+#include <QtGui>
+#include <QMessageBox>
+#include <QGraphicsScene>
+#include <QGraphicsPixmapItem>
 
 namespace Ui {
 class MainWindow;
@@ -30,9 +35,11 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QGraphicsScene *scene;
 
 private slots:
     void changeProgressBar(float);
+    void addToList(int);
 };
 
 #endif // MAINWINDOW_H

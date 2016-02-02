@@ -2,10 +2,28 @@
 #define SOKOGENERATOR_H
 
 #include <QObject>
+#include <vector>
+
+#define WALL '#'
+#define FLOOR ' '
 
 
 class SokoGenerator : public QObject{
     Q_OBJECT
+
+private:
+    int roomWidth;
+    int roomHeight;
+    int noOfBoxes;
+    int noOfLevels;
+    int difficulty;
+    int percentage;
+
+    struct Level {
+        std::vector< std::vector<char> > grid;
+    };
+
+    std::vector<Level> levels;
 
 public:
     explicit SokoGenerator(QObject *parent = 0);
@@ -18,26 +36,20 @@ public:
     void setDifficulty(int value){ difficulty = value; }
     void setPercentage(int value){ percentage = value; }
 
-    void resetVariables(){ roomHeight = roomWidth = noOfBoxes = noOfLevels = difficulty = 0; }
-
-    int getPercentage(){ return percentage; }
     void updatePercentage(float value);
+    void listLevelSet(std::vector<Level>);
 
     void generateLevel();
     void generateLevel(int roomWidth, int roomHeight, int noOfBoxes, int difficulty, int levelNumber);
+    void clearVectors();
 
     int randomNumber(int min, int max);
 
-private:
-    int roomWidth;
-    int roomHeight;
-    int noOfBoxes;
-    int noOfLevels;
-    int difficulty;
-    int percentage;
+    void initLevel(Level *level, int roomWidth, int roomHeight);
 
 signals:
     void changeProgressBar(float);
+    void addToList(int);
 
 };
 
