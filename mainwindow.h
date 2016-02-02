@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
+#include <QListWidgetItem>
 
 namespace Ui {
 class MainWindow;
@@ -18,6 +19,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
+    void displayLevel(int levelNum);
     ~MainWindow();
 
 private slots:
@@ -36,10 +38,14 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
+    std::vector<QGraphicsPixmapItem> sprites;
+    QGraphicsPixmapItem *sprite;
+    QGraphicsPixmapItem *sprite2;
 
 private slots:
     void changeProgressBar(float);
     void addToList(int);
+    void displayLevel(QListWidgetItem*);
 };
 
 #endif // MAINWINDOW_H

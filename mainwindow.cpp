@@ -13,15 +13,10 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindo
 
     connect(&Generator, SIGNAL(changeProgressBar(float)), this, SLOT(changeProgressBar(float)));
     connect(&Generator, SIGNAL(addToList(int)), this, SLOT(addToList(int)));
+    connect(ui->list_LevelSet, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(displayLevel(QListWidgetItem*)));
 
     scene = new QGraphicsScene(this);
     ui->graphicsView->setScene(scene);
-
-    //QPixmap pixmap(":/tileset/textures/box.png");
-    QGraphicsPixmapItem *myItem = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/box.png"));
-    scene->addItem(myItem);
-
-
 }
 
 MainWindow::~MainWindow()
@@ -35,8 +30,65 @@ void MainWindow::changeProgressBar(float value){
 
 void MainWindow::addToList(int value){
     ui->list_LevelSet->addItem("Level " + QString::number(value));
-    QVariant dataValue(value);
+    QVariant dataValue(value-1);
     ui->list_LevelSet->item(value-1)->setData(Qt::UserRole, dataValue);
+}
+
+void MainWindow::displayLevel(QListWidgetItem* item){
+    //int value = QVariant.toInt(item->data(Qt::UserRole));
+    scene->clear();
+    int value = item->data(Qt::UserRole).toInt();
+    displayLevel(value);
+
+    QRectF bounds = scene->itemsBoundingRect();
+    ui->graphicsView->fitInView(bounds, Qt::KeepAspectRatio);
+    ui->graphicsView->centerOn(0, 0);
+}
+
+void MainWindow::displayLevel(int levelNum){
+    std::vector< std::vector<char> > level = Generator.getLevel(levelNum);
+
+    for(int y = 0; y < level.size(); y++){
+        for(int x = 0; x < level[y].size(); x++){
+
+            if(level[y].at(x) == '#'){
+                sprite = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/wall.png"));
+                sprite2 = NULL;
+            }
+            else if(level[y].at(x) == ' '){
+                sprite = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/floor.png"));
+                sprite2 = NULL;
+            }
+            else if(level[y].at(x) == '@'){
+                sprite = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/floor.png"));
+                sprite2 = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/robot1_hold.png"));
+            }
+            else if(level[y].at(x) == '+'){
+                sprite = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/goal.png"));
+                sprite2 = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/robot1_hold.png"));
+            }
+            else if(level[y].at(x) == '$'){
+                sprite = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/floor.png"));
+                sprite2 = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/box.png"));
+            }
+            else if(level[y].at(x) == '*'){
+                sprite = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/goal.png"));
+                sprite2 = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/floor.png"));
+            }
+            else if(level[y].at(x) == '.'){
+                sprite = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/goal.png"));
+                sprite2 = NULL;
+            }
+
+            sprite->setPos(x * 64, y * 64);
+            scene->addItem(sprite);
+            if(sprite2 != NULL){
+                sprite2->setPos(x * 64, y * 64);
+                scene->addItem(sprite2);
+            }
+        }
+    }
+
 }
 
 void MainWindow::on_combo_Levels_activated(int index)
