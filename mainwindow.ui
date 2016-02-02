@@ -48,29 +48,6 @@
      <string>Generate Levels!</string>
     </property>
    </widget>
-   <widget class="QScrollArea" name="scrollArea">
-    <property name="geometry">
-     <rect>
-      <x>11</x>
-      <y>41</y>
-      <width>291</width>
-      <height>281</height>
-     </rect>
-    </property>
-    <property name="widgetResizable">
-     <bool>true</bool>
-    </property>
-    <widget class="QWidget" name="scrollAreaWidgetContents">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>289</width>
-       <height>279</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
    <widget class="QGraphicsView" name="graphicsView">
     <property name="geometry">
      <rect>
@@ -590,6 +567,16 @@
       <string>20</string>
      </property>
     </item>
+   </widget>
+   <widget class="QListWidget" name="list_LevelSet">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>291</width>
+      <height>281</height>
+     </rect>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
