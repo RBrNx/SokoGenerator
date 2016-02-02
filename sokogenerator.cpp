@@ -2,6 +2,7 @@
 #include "mainwindow.h"
 #include <QMessageBox>
 #include <time.h>
+#include <iostream>
 
 SokoGenerator::SokoGenerator(QObject *parent):QObject(parent){
     roomHeight = 0;
@@ -38,22 +39,17 @@ void SokoGenerator::generateLevel(){
 
 void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, int difficulty, int levelNumber){
     int _roomW, _roomH, _Boxes, _difficulty;
-    srand(time(NULL));
 
     if(roomWidth == 0){ _roomW = randomNumber(5, 20); } else { _roomW = roomWidth; }
     if(roomHeight == 0){ _roomH = randomNumber(5, 20); } else { _roomH = roomHeight; }
     if(noOfBoxes == 0){ _Boxes = randomNumber(1, 4); } else { _Boxes = noOfBoxes; }
     if(difficulty == 0){ _difficulty = randomNumber(1, 5); } else { _difficulty = difficulty; }
 
-    //QMessageBox::information(NULL, "Information", "Generated Level: " + QString::number(levelNumber) + "\n Room Width: " + QString::number(_roomW) + "\n Room Height: "
-                             //+ QString::number(_roomH) + "\n No of Boxes: " + QString::number(_Boxes) + "\n Difficulty: " + QString::number(_difficulty));
-
     Level newLevel;
 
     initLevel(&newLevel, _roomW, _roomH);
 
     levels.push_back(newLevel);
-
 }
 
 void SokoGenerator::initLevel(SokoGenerator::Level *level, int roomWidth, int roomHeight){
@@ -75,6 +71,13 @@ void SokoGenerator::initLevel(SokoGenerator::Level *level, int roomWidth, int ro
         level->grid.push_back(row);
         row.clear();
     }
+
+    level->grid[randomNumber(1, roomHeight-1)].at(randomNumber(1, roomWidth-1)) = '@';
+}
+
+std::vector< std::vector<char> > SokoGenerator::getLevel(int level){
+
+    return levels[level].grid;
 }
 
 void SokoGenerator::clearVectors(){

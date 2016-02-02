@@ -46,6 +46,7 @@ public:
     int randomNumber(int min, int max);
 
     void initLevel(Level *level, int roomWidth, int roomHeight);
+    std::vector< std::vector<char> > getLevel(int level);
 
 signals:
     void changeProgressBar(float);
