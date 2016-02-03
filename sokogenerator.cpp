@@ -40,9 +40,9 @@ void SokoGenerator::generateLevel(){
 void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, int difficulty, int levelNumber){
     int _roomW, _roomH, _Boxes, _difficulty;
 
-    if(roomWidth == 0){ _roomW = randomNumber(5, 20); } else { _roomW = roomWidth; }
-    if(roomHeight == 0){ _roomH = randomNumber(5, 20); } else { _roomH = roomHeight; }
-    if(noOfBoxes == 0){ _Boxes = randomNumber(1, 4); } else { _Boxes = noOfBoxes; }
+    if(roomWidth == 0){ _roomW = randomNumber(5, 12); } else { _roomW = roomWidth; }
+    if(roomHeight == 0){ _roomH = randomNumber(5, 12); } else { _roomH = roomHeight; }
+    if(noOfBoxes == 0){ _Boxes = randomNumber(1, 3); } else { _Boxes = noOfBoxes; }
     if(difficulty == 0){ _difficulty = randomNumber(1, 5); } else { _difficulty = difficulty; }
 
     Level newLevel;

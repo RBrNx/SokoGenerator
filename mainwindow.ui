@@ -257,11 +257,6 @@
       <string>3</string>
      </property>
     </item>
-    <item>
-     <property name="text">
-      <string>4</string>
-     </property>
-    </item>
    </widget>
    <widget class="QComboBox" name="combo_Levels">
     <property name="geometry">
@@ -432,46 +427,6 @@
       <string>12</string>
      </property>
     </item>
-    <item>
-     <property name="text">
-      <string>13</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>14</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>15</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>16</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>17</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>18</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>19</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>20</string>
-     </property>
-    </item>
    </widget>
    <widget class="QComboBox" name="combo_RoomW">
     <property name="geometry">
@@ -525,46 +480,6 @@
     <item>
      <property name="text">
       <string>12</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>13</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>14</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>15</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>16</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>17</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>18</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>19</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>20</string>
      </property>
     </item>
    </widget>
