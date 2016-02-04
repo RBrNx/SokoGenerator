@@ -3,6 +3,12 @@
 
 #include <QObject>
 #include <vector>
+#include <string>
+#include <fstream>
+#include <iostream>
+#include <time.h>
+
+using namespace std;
 
 #define WALL '#'
 #define FLOOR ' '
@@ -24,6 +30,7 @@ private:
     };
 
     std::vector<Level> levels;
+    std::vector<Level> patterns;
 
 public:
     explicit SokoGenerator(QObject *parent = 0);
@@ -43,9 +50,10 @@ public:
     void generateLevel(int roomWidth, int roomHeight, int noOfBoxes, int difficulty, int levelNumber);
     void clearVectors();
 
-    int randomNumber(int min, int max);
+    int randomNumber(int min, int max, int divisor = 1);
 
     void initLevel(Level *level, int roomWidth, int roomHeight);
+    void placePatterns(SokoGenerator::Level *level, int roomWidth, int roomHeight);
     std::vector< std::vector<char> > getLevel(int level);
 
 signals:

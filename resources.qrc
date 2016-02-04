@@ -1,0 +1,29 @@
+<RCC>
+    <qresource prefix="/tileset">
+        <file>textures/box.png</file>
+        <file>textures/box_shipped.png</file>
+        <file>textures/floor.png</file>
+        <file>textures/goal.png</file>
+        <file>textures/robot1_hold.png</file>
+        <file>textures/wall.png</file>
+    </qresource>
+    <qresource prefix="/patterns">
+        <file>patterns/1.txt</file>
+        <file>patterns/2.txt</file>
+        <file>patterns/3.txt</file>
+        <file>patterns/4.txt</file>
+        <file>patterns/5.txt</file>
+        <file>patterns/6.txt</file>
+        <file>patterns/7.txt</file>
+        <file>patterns/8.txt</file>
+        <file>patterns/9.txt</file>
+        <file>patterns/10.txt</file>
+        <file>patterns/11.txt</file>
+        <file>patterns/12.txt</file>
+        <file>patterns/13.txt</file>
+        <file>patterns/14.txt</file>
+        <file>patterns/15.txt</file>
+        <file>patterns/16.txt</file>
+        <file>patterns/17.txt</file>
+    </qresource>
+</RCC>
