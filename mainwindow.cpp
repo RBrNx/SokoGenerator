@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "sokogenerator.h"
+#include <iostream>
+
 
 SokoGenerator Generator;
 
@@ -14,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindo
     connect(&Generator, SIGNAL(changeProgressBar(float)), this, SLOT(changeProgressBar(float)));
     connect(&Generator, SIGNAL(addToList(int)), this, SLOT(addToList(int)));
     connect(ui->list_LevelSet, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(displayLevel(QListWidgetItem*)));
+    connect(ui->combo_RoomH, SIGNAL(currentTextChanged(QString)), this, SLOT(disable3by3(QString)));
+    connect(ui->combo_RoomW, SIGNAL(currentTextChanged(QString)), this, SLOT(disable3by3(QString)));
 
     scene = new QGraphicsScene(this);
     ui->graphicsView->setScene(scene);
@@ -22,6 +26,27 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindo
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::disable3by3(QString value){
+    if(ui->combo_RoomW->currentText() == "3" && roomHRemoved == false){
+        qobject_cast<QStandardItemModel *> (ui->combo_RoomH->model())->item(1)->setEnabled(false);
+        roomHRemoved = true;
+    }
+    else if (ui->combo_RoomH->currentText() == "3" && roomWRemoved == false){
+        qobject_cast<QStandardItemModel *> (ui->combo_RoomW->model())->item(1)->setEnabled(false);
+        roomWRemoved = true;
+    }
+    else{
+        if(roomWRemoved){
+           roomWRemoved = false;
+           qobject_cast<QStandardItemModel *> (ui->combo_RoomW->model())->item(1)->setEnabled(true);
+        }
+        if(roomHRemoved){
+           qobject_cast<QStandardItemModel *> (ui->combo_RoomH->model())->item(1)->setEnabled(true);
+           roomHRemoved = false;
+        }
+    }
 }
 
 void MainWindow::changeProgressBar(float value){

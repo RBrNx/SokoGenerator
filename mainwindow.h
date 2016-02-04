@@ -42,10 +42,14 @@ private:
     QGraphicsPixmapItem *sprite;
     QGraphicsPixmapItem *sprite2;
 
+    bool roomWRemoved = false;
+    bool roomHRemoved = false;
+
 private slots:
     void changeProgressBar(float);
     void addToList(int);
     void displayLevel(QListWidgetItem*);
+    void disable3by3(QString);
 };
 
 #endif // MAINWINDOW_H

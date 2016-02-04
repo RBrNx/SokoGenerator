@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = SokoGenerator
 TEMPLATE = app
 
+CONFIG += c++11
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -26,4 +27,4 @@ FORMS    += mainwindow.ui
 win32: RC_ICONS = SokoGenerator.ico
 
 RESOURCES += \
-    textures.qrc
+    resources.qrc
