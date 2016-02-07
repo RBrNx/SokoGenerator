@@ -162,14 +162,14 @@ void SokoGenerator::rotatePattern(twoDVector *pattern, int rotation){
     twoDVector tempPattern = *pattern;
     if(rotation == 1){
         //Rotate by 90 - reverse each row
-        for(int i = 0; i < tempPattern[i].size(); i++){
+        for(int i = 0; i < tempPattern.size(); i++){
             std::reverse(tempPattern[i].begin(), tempPattern[i].end());
         }
         *pattern = tempPattern;
     }
     else if(rotation == 2){
         //Rotate by 180 - reverse each row, then each column
-        for(int i = 0; i < tempPattern[i].size(); i++){
+        for(int i = 0; i < tempPattern.size(); i++){
             std::reverse(tempPattern[i].begin(), tempPattern[i].end());
         }
 
