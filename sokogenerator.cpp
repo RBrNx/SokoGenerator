@@ -72,7 +72,7 @@ void SokoGenerator::generateLevel(){
 void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, int difficulty, int levelNumber){
     int _roomW, _roomH, _Boxes, _difficulty;
     if(roomWidth == 0){ _roomW = randomNumber(3, 12, 3); } else { _roomW = roomWidth; }
-    if(roomHeight == 0){ _roomH = randomNumber(3, 12, 3); } else { _roomH = roomHeight; }
+    if(roomHeight == 0){ (_roomW == 3) ? _roomH = randomNumber(6, 12, 3) : _roomH = randomNumber(3, 12, 3); }
     if(noOfBoxes == 0){ _Boxes = randomNumber(1, 3); } else { _Boxes = noOfBoxes; }
     if(difficulty == 0){ _difficulty = randomNumber(1, 5); } else { _difficulty = difficulty; }
 
@@ -82,6 +82,7 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
     placePatterns(&newLevel, _roomW, _roomH);
 
     levels.push_back(newLevel);
+    cout << "Level Generated";
 }
 
 void SokoGenerator::initLevel(SokoGenerator::Level *level, int roomWidth, int roomHeight){
@@ -117,41 +118,73 @@ void SokoGenerator::placePatterns(SokoGenerator::Level *level, int roomWidth, in
 
         for(int x = 1; x < roomWidth; x++){
 
-            if((y - 1) % 3 == 0 || (x - 1) % 3 == 0){
+            if((y - 1) % 3 == 0 && (x - 1) % 3 == 0){
                 while(patternPlacedCount != 25){
                     tempLevel = *level;
-                    vector< vector<char> > chosenPattern = patterns[rand() % patterns.size()].grid;
+                    patternPlacedCount = 0;
+                    twoDVector chosenPattern = patterns[randomNumber(0, 17)].grid;
+                    rotatePattern(&chosenPattern, randomNumber(0, 3));
                     for(int pY = 0; pY < chosenPattern.size(); pY++){
-                        for(int pX = 0; pX < chosenPattern[y].size(); pX++){
+                        for(int pX = 0; pX < chosenPattern[pY].size(); pX++){
 
-                            if(pX == 0 || pX == chosenPattern.size()-1 || pY == 0 || pY == chosenPattern[pY].size()){
+                            if(pX == 0 || pX == chosenPattern[pY].size()-1 || pY == 0 || pY == chosenPattern.size()-1){
                                 if(chosenPattern[pY][pX] == ' '){
-                                    if(tempLevel.grid[y][x] != ' '){
+                                    if(tempLevel.grid[y + pY -1][x + pX - 1] != ' '){
                                         patternPlacedCount = -100;
                                     }
                                     else{
                                         patternPlacedCount++;
                                     }
                                 }
+                                else{
+                                    patternPlacedCount++;
+                                }
                             }
-                            else{
+                            else if(chosenPattern[pY][pX] != '-'){
                                tempLevel.grid[y + pY - 1][x + pX - 1] = chosenPattern[pY][pX];
                                patternPlacedCount++;
+                            }
+                            else{
+                                patternPlacedCount++;
                             }
                         }
                     }
                 }
-
                 *level = tempLevel;
+                patternPlacedCount = 0;
             }
 
         }
     }
 }
 
-std::vector< std::vector<char> > SokoGenerator::getLevel(int level){
+void SokoGenerator::rotatePattern(twoDVector *pattern, int rotation){
+    twoDVector tempPattern = *pattern;
+    if(rotation == 1){
+        //Rotate by 90 - reverse each row
+        for(int i = 0; i < tempPattern[i].size(); i++){
+            std::reverse(tempPattern[i].begin(), tempPattern[i].end());
+        }
+        *pattern = tempPattern;
+    }
+    else if(rotation == 2){
+        //Rotate by 180 - reverse each row, then each column
+        for(int i = 0; i < tempPattern[i].size(); i++){
+            std::reverse(tempPattern[i].begin(), tempPattern[i].end());
+        }
 
-    return levels[level].grid;
+        std::reverse(tempPattern.begin(), tempPattern.end());
+        *pattern = tempPattern;
+    }
+    else if(rotation == 3){
+        //Rotate by 270 - reverse each column
+        std::reverse(tempPattern.begin(), tempPattern.end());
+        *pattern = tempPattern;
+    }
+}
+
+SokoGenerator::twoDVector SokoGenerator::getLevel(int level){
+    return levels[level].grid ;
 }
 
 void SokoGenerator::clearVectors(){
