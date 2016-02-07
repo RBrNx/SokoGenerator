@@ -16,6 +16,8 @@ using namespace std;
 
 class SokoGenerator : public QObject{
     Q_OBJECT
+    typedef vector<vector<char>> twoDVector;
+
 
 private:
     int roomWidth;
@@ -26,7 +28,7 @@ private:
     int percentage;
 
     struct Level {
-        std::vector< std::vector<char> > grid;
+        twoDVector grid;
     };
 
     std::vector<Level> levels;
@@ -54,7 +56,8 @@ public:
 
     void initLevel(Level *level, int roomWidth, int roomHeight);
     void placePatterns(SokoGenerator::Level *level, int roomWidth, int roomHeight);
-    std::vector< std::vector<char> > getLevel(int level);
+    void rotatePattern(twoDVector *pattern, int rotation);
+    twoDVector getLevel(int level);
 
 signals:
     void changeProgressBar(float);
