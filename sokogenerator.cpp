@@ -82,8 +82,9 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
         if(difficulty == 0){ _difficulty = randomNumber(1, 5); } else { _difficulty = difficulty; }
 
         initLevel(&newLevel, _roomW, _roomH);
-        //placePatterns(&newLevel, _roomW, _roomH);
-        generationSuccessful = checkConnectivity(&newLevel, _roomW, _roomH);
+        placePatterns(&newLevel, _roomW, _roomH);
+        //generationSuccessful = checkConnectivity(&newLevel, _roomW, _roomH);
+        generationSuccessful = true;
     }
     levels.push_back(newLevel);
     cout << "Level Generated";
@@ -226,18 +227,27 @@ bool SokoGenerator::checkConnectivity(SokoGenerator::Level *level, int roomWidth
 }
 
 void SokoGenerator::floodfill(TwoDVector_int &level, int row, int column, int roomWidth, int roomHeight){
-    queue<int> levelQueue;
-    levelQueue.push(level[column][row]);
+    struct Coordinate {
+        int column;
+        int row;
+    } coordinate;
+
+    coordinate.column = column;
+    coordinate.row = row;
+
+    queue<Coordinate> levelQueue;
+
+    levelQueue.push(coordinate);
 
     while(!levelQueue.empty()){
-        int node = levelQueue.front();
+        Coordinate node = levelQueue.front();
         levelQueue.pop();
-        if(node == 0){
-            level[column][row] = 2;
-            if(row > 0) if(level[column][row-1] == 0){ levelQueue.push(level[column][row-1]); }
-            if(row < roomWidth) if(level[column][row+1] == 0){ levelQueue.push(level[column][row+1]); }
-            if(column > 0) if(level[column-1][row] == 0){ levelQueue.push(level[column-1][row]); }
-            if(column < roomHeight) if(level[column+1][row] == 0){ levelQueue.push(level[column+1][row]); }
+        if(level[node.column][node.row] == 0){
+            level[node.column][node.row] = 2;
+            if(node.row > 0) if(level[node.column][node.row-1] == 0){ levelQueue.push({node.column, node.row-1}); }
+            if(node.row < roomWidth) if(level[node.column][node.row+1] == 0){ levelQueue.push({node.column, node.row+1}); }
+            if(node.column > 0) if(level[column-1][row] == 0){ levelQueue.push({node.column-1, node.row}); }
+            if(node.column < roomHeight) if(level[column+1][row] == 0){ levelQueue.push({node.column+1, node.row}); }
         }
     }
 }
