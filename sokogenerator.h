@@ -7,6 +7,7 @@
 #include <fstream>
 #include <iostream>
 #include <time.h>
+#include <queue>
 
 using namespace std;
 
@@ -16,7 +17,8 @@ using namespace std;
 
 class SokoGenerator : public QObject{
     Q_OBJECT
-    typedef vector<vector<char>> twoDVector;
+    typedef vector<vector<char>> TwoDVector_char;
+    typedef vector<vector<int>> TwoDVector_int;
 
 
 private:
@@ -28,7 +30,7 @@ private:
     int percentage;
 
     struct Level {
-        twoDVector grid;
+        TwoDVector_char grid;
     };
 
     std::vector<Level> levels;
@@ -56,8 +58,10 @@ public:
 
     void initLevel(Level *level, int roomWidth, int roomHeight);
     void placePatterns(SokoGenerator::Level *level, int roomWidth, int roomHeight);
-    void rotatePattern(twoDVector *pattern, int rotation);
-    twoDVector getLevel(int level);
+    void rotatePattern(TwoDVector_char *pattern, int rotation);
+    bool checkConnectivity(SokoGenerator::Level *level, int roomWidth, int roomHeight);
+    TwoDVector_char getLevel(int level);
+    void floodfill(TwoDVector_int &level, int row, int column, int roomWidth, int roomHeigh);
 
 signals:
     void changeProgressBar(float);
