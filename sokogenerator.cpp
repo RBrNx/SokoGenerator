@@ -46,10 +46,10 @@ SokoGenerator::~SokoGenerator(){
 }
 
 int SokoGenerator::randomNumber(int min, int max, int divisor){
-    int number = rand() % (max-min)+min;
+    int number = rand() % (max - min + 1)+ min;
 
     while(number % divisor != 0){
-        number = rand() % (max-min)+min;
+        number = rand() % (max - min + 1) + min;
     }
     return number;
 }
@@ -87,9 +87,10 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
             _roomH = roomHeight;
         }
 
-        initLevel(&newLevel, _roomW, _roomH);
-        placePatterns(&newLevel, _roomW, _roomH);
-        generationSuccessful = checkConnectivity(&newLevel, _roomW, _roomH);
+        initLevel(newLevel, _roomW, _roomH);
+        placePatterns(newLevel, _roomW, _roomH);
+        generationSuccessful = checkConnectivity(newLevel, _roomW, _roomH);
+        if(generationSuccessful) placeGoalsAndBoxes(newLevel, _roomW, _roomH, _Boxes);
     }
     levels.push_back(newLevel);
 }
@@ -112,7 +113,7 @@ void SokoGenerator::initLevel(SokoGenerator::Level &level, int roomWidth, int ro
 
         }
 
-        level->grid.push_back(row);
+        level.grid.push_back(row);
         row.clear();
     }
 
@@ -129,10 +130,10 @@ void SokoGenerator::placePatterns(SokoGenerator::Level &level, int roomWidth, in
 
             if((y - 1) % 3 == 0 && (x - 1) % 3 == 0){
                 while(patternPlacedCount != 25){
-                    tempLevel = *level;
+                    tempLevel = level;
                     patternPlacedCount = 0;
-                    TwoDVector_char chosenPattern = patterns[randomNumber(0, 17)].grid;
-                    rotatePattern(&chosenPattern, randomNumber(0, 3));
+                    TwoDVector_char chosenPattern = patterns[randomNumber(0, 16)].grid;
+                    rotatePattern(chosenPattern, randomNumber(0, 3));
                     for(int pY = 0; pY < chosenPattern.size(); pY++){
                         for(int pX = 0; pX < chosenPattern[pY].size(); pX++){
 
@@ -159,7 +160,7 @@ void SokoGenerator::placePatterns(SokoGenerator::Level &level, int roomWidth, in
                         }
                     }
                 }
-                *level = tempLevel;
+                level = tempLevel;
                 patternPlacedCount = 0;
             }
 
@@ -168,13 +169,12 @@ void SokoGenerator::placePatterns(SokoGenerator::Level &level, int roomWidth, in
 }
 
 void SokoGenerator::rotatePattern(TwoDVector_char &pattern, int rotation){
-    TwoDVector_char tempPattern = *pattern;
+    TwoDVector_char tempPattern = pattern;
     if(rotation == 1){
         //Rotate by 90 - reverse each row
         for(int i = 0; i < tempPattern.size(); i++){
             std::reverse(tempPattern[i].begin(), tempPattern[i].end());
         }
-        *pattern = tempPattern;
     }
     else if(rotation == 2){
         //Rotate by 180 - reverse each row, then each column
@@ -183,23 +183,24 @@ void SokoGenerator::rotatePattern(TwoDVector_char &pattern, int rotation){
         }
 
         std::reverse(tempPattern.begin(), tempPattern.end());
-        *pattern = tempPattern;
     }
     else if(rotation == 3){
         //Rotate by 270 - reverse each column
         std::reverse(tempPattern.begin(), tempPattern.end());
-        *pattern = tempPattern;
     }
+
+    pattern = tempPattern;
 }
 
 bool SokoGenerator::checkConnectivity(SokoGenerator::Level &level, int roomWidth, int roomHeight){
     TwoDVector_int tempLevel;
     bool floorFound = false;
     vector<int> tempRow;
+    int wallCount = 0;
 
     for(int column = 0; column < roomHeight+2; column++){
         for(int row = 0; row < roomWidth+2; row++){
-            if(level->grid[column][row] == FLOOR){
+            if(level.grid[column][row] == FLOOR){
                 tempRow.push_back(0);
             }
             else{
@@ -222,6 +223,12 @@ bool SokoGenerator::checkConnectivity(SokoGenerator::Level &level, int roomWidth
     for(int column = 0; column < roomHeight+2; column++){
         for(int row = 0; row < roomWidth+2; row++){
             if(tempLevel[column][row] == 0){
+                return false;
+            }
+            else if (tempLevel[column][row] == 1) {
+                wallCount++;
+            }
+            if (wallCount == tempLevel.size() * tempLevel[column].size()) {
                 return false;
             }
         }
@@ -256,8 +263,22 @@ void SokoGenerator::floodfill(TwoDVector_int &level, int row, int column, int ro
     }
 }
 
-void SokoGenerator::placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidth, int roomHeight){
+void SokoGenerator::placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidth, int roomHeight, int noOfBoxes){
+    bool goalsPlaced = false, boxesPlaced = false;
+    int goalCount = 0, boxCount = 0;
+    int xCoord = 0, yCoord = 0;
 
+    while(!goalsPlaced){
+        xCoord = randomNumber(1, roomWidth);
+        yCoord = randomNumber(1, roomHeight);
+        if(level.grid[yCoord][xCoord] == FLOOR){
+            level.grid[yCoord][xCoord] = GOAL;
+            goalCount++;
+        }
+        if(goalCount == noOfBoxes){
+            goalsPlaced = true;
+        }
+    }
 }
 
 SokoGenerator::TwoDVector_char SokoGenerator::getLevel(int level){
