@@ -57,10 +57,11 @@ public:
 
     int randomNumber(int min, int max, int divisor = 1);
 
-    void initLevel(Level *level, int roomWidth, int roomHeight);
-    void placePatterns(SokoGenerator::Level *level, int roomWidth, int roomHeight);
-    void rotatePattern(TwoDVector_char *pattern, int rotation);
-    bool checkConnectivity(SokoGenerator::Level *level, int roomWidth, int roomHeight);
+    void initLevel(Level &level, int roomWidth, int roomHeight);
+    void placePatterns(SokoGenerator::Level &level, int roomWidth, int roomHeight);
+    void rotatePattern(TwoDVector_char &pattern, int rotation);
+    bool checkConnectivity(SokoGenerator::Level &level, int roomWidth, int roomHeight);
+    void placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidth, int roomHeight);
     TwoDVector_char getLevel(int level);
     void floodfill(TwoDVector_int &level, int row, int column, int roomWidth, int roomHeigh);
 
