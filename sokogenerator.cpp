@@ -76,18 +76,23 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
     while(!generationSuccessful){
         newLevel.grid.clear();
         int _roomW, _roomH, _Boxes, _difficulty;
-        if(roomWidth == 0){ _roomW = randomNumber(3, 12, 3); } else { _roomW = roomWidth; }
-        if(roomHeight == 0){ (_roomW == 3) ? _roomH = randomNumber(6, 12, 3) : _roomH = randomNumber(3, 12, 3); }
         if(noOfBoxes == 0){ _Boxes = randomNumber(1, 3); } else { _Boxes = noOfBoxes; }
         if(difficulty == 0){ _difficulty = randomNumber(1, 5); } else { _difficulty = difficulty; }
+        if(roomWidth == 0){ _roomW = randomNumber(3, 12, 3); } else { _roomW = roomWidth; }
+        if(roomHeight == 0){
+            if(_roomW == 3){ _roomH = randomNumber(6, 12, 3); }
+            else { _roomH = randomNumber(3, 12, 3); }
+        }
+        else {
+            _roomH = roomHeight;
+        }
 
         initLevel(&newLevel, _roomW, _roomH);
         placePatterns(&newLevel, _roomW, _roomH);
-        //generationSuccessful = checkConnectivity(&newLevel, _roomW, _roomH);
-        generationSuccessful = true;
+        generationSuccessful = checkConnectivity(&newLevel, _roomW, _roomH);
+        //generationSuccessful = true;
     }
     levels.push_back(newLevel);
-    cout << "Level Generated";
 }
 
 void SokoGenerator::initLevel(SokoGenerator::Level *level, int roomWidth, int roomHeight){
@@ -210,7 +215,7 @@ bool SokoGenerator::checkConnectivity(SokoGenerator::Level *level, int roomWidth
         for(int row = 0; row < roomWidth+2; row++){
             if(tempLevel[column][row] == 0 && floorFound == false){
                 floorFound = true;
-                floodfill(tempLevel, row, column, roomWidth, roomHeight);
+                floodfill(tempLevel, row, column, roomWidth+2, roomHeight+2);
             }
         }
     }
@@ -246,8 +251,8 @@ void SokoGenerator::floodfill(TwoDVector_int &level, int row, int column, int ro
             level[node.column][node.row] = 2;
             if(node.row > 0) if(level[node.column][node.row-1] == 0){ levelQueue.push({node.column, node.row-1}); }
             if(node.row < roomWidth) if(level[node.column][node.row+1] == 0){ levelQueue.push({node.column, node.row+1}); }
-            if(node.column > 0) if(level[column-1][row] == 0){ levelQueue.push({node.column-1, node.row}); }
-            if(node.column < roomHeight) if(level[column+1][row] == 0){ levelQueue.push({node.column+1, node.row}); }
+            if(node.column > 0) if(level[node.column-1][node.row] == 0){ levelQueue.push({node.column-1, node.row}); }
+            if(node.column < roomHeight) if(level[node.column+1][node.row] == 0){ levelQueue.push({node.column+1, node.row}); }
         }
     }
 }
