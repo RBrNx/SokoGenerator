@@ -14,6 +14,7 @@ using namespace std;
 
 #define WALL '#'
 #define FLOOR ' '
+#define GOAL '.'
 
 
 class SokoGenerator : public QObject{
@@ -61,7 +62,7 @@ public:
     void placePatterns(SokoGenerator::Level &level, int roomWidth, int roomHeight);
     void rotatePattern(TwoDVector_char &pattern, int rotation);
     bool checkConnectivity(SokoGenerator::Level &level, int roomWidth, int roomHeight);
-    void placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidth, int roomHeight);
+    void placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidth, int roomHeight, int noOfBoxes);
     TwoDVector_char getLevel(int level);
     void floodfill(TwoDVector_int &level, int row, int column, int roomWidth, int roomHeigh);
 

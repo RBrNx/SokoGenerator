@@ -3,7 +3,6 @@
 #include "sokogenerator.h"
 #include <iostream>
 
-
 SokoGenerator Generator;
 
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindow)
@@ -101,8 +100,8 @@ void MainWindow::displayLevel(int levelNum){
                 sprite2 = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/floor.png"));
             }
             else if(level[y].at(x) == '.'){
-                sprite = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/goal.png"));
-                sprite2 = NULL;
+                sprite = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/floor.png"));;
+                sprite2 = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/goal.png"));
             }
 
             sprite->setPos(x * 64, y * 64);

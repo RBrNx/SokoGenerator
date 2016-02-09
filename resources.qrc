@@ -3,9 +3,9 @@
         <file>textures/box.png</file>
         <file>textures/box_shipped.png</file>
         <file>textures/floor.png</file>
-        <file>textures/goal.png</file>
         <file>textures/robot1_hold.png</file>
         <file>textures/wall.png</file>
+        <file>textures/goal.png</file>
     </qresource>
     <qresource prefix="/patterns">
         <file>patterns/1.txt</file>
