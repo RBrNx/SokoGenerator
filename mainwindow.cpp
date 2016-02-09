@@ -123,12 +123,12 @@ void MainWindow::on_combo_Levels_activated(int index)
 
 void MainWindow::on_combo_RoomH_activated(int index)
 {
-    Generator.setRoomHeight(index + 4);
+    Generator.setRoomHeight(index * 3);
 }
 
 void MainWindow::on_combo_RoomW_activated(int index)
 {
-    Generator.setRoomWidth(index + 4);
+    Generator.setRoomWidth(index * 3);
 }
 
 void MainWindow::on_combo_Boxes_activated(int index)
