@@ -281,20 +281,6 @@ void SokoGenerator::placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidt
     }
 }
 
-SokoGenerator::TwoDVector_char SokoGenerator::getLevel(int level){
-    return levels[level].grid ;
-}
+void SokoGenerator::regenerateLevel(int lvlNum){
 
-void SokoGenerator::clearVectors(){
-    levels.clear();
-}
-
-void SokoGenerator::updatePercentage(float value){
-    emit changeProgressBar(value);
-}
-
-void SokoGenerator::listLevelSet(std::vector<Level> levels){
-    for(int i = 0; i < levels.size(); i++){
-         emit addToList(i + 1);
-    }
 }
