@@ -473,7 +473,14 @@
     <addaction name="actionSave_As"/>
     <addaction name="actionClose"/>
    </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>About</string>
+    </property>
+    <addaction name="actionAbout_SokoGenerator"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionNew">
@@ -494,6 +501,11 @@
   <action name="actionClose">
    <property name="text">
     <string>Close</string>
+   </property>
+  </action>
+  <action name="actionAbout_SokoGenerator">
+   <property name="text">
+    <string>About SokoGenerator</string>
    </property>
   </action>
  </widget>

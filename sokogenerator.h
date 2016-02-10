@@ -23,22 +23,11 @@ class SokoGenerator : public QObject{
     typedef vector<vector<int>> TwoDVector_int;
 
 
-private:
-    int roomWidth;
-    int roomHeight;
-    int noOfBoxes;
-    int noOfLevels;
-    int difficulty;
-    int percentage;
-
+public:
     struct Level {
         TwoDVector_char grid;
     };
 
-    std::vector<Level> levels;
-    std::vector<Level> patterns;
-
-public:
     explicit SokoGenerator(QObject *parent = 0);
     ~SokoGenerator();
 
@@ -49,12 +38,13 @@ public:
     void setDifficulty(int value){ difficulty = value; }
     void setPercentage(int value){ percentage = value; }
 
-    void updatePercentage(float value);
-    void listLevelSet(std::vector<Level>);
+    void updatePercentage(float value){ emit changeProgressBar(value); }
+    void listLevelSet(std::vector<Level>){ for(int i = 0; i < levels.size(); i++){ emit addToList(i + 1); } }
 
     void generateLevel();
     void generateLevel(int roomWidth, int roomHeight, int noOfBoxes, int difficulty, int levelNumber);
-    void clearVectors();
+    void clearVectors(){ levels.clear(); }
+    void regenerateLevel(int lvlNum);
 
     int randomNumber(int min, int max, int divisor = 1);
 
@@ -63,8 +53,20 @@ public:
     void rotatePattern(TwoDVector_char &pattern, int rotation);
     bool checkConnectivity(SokoGenerator::Level &level, int roomWidth, int roomHeight);
     void placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidth, int roomHeight, int noOfBoxes);
-    TwoDVector_char getLevel(int level);
+    TwoDVector_char getLevel(int level) { return levels[level].grid; }
+    vector<Level> getLevels() { return levels; }
     void floodfill(TwoDVector_int &level, int row, int column, int roomWidth, int roomHeigh);
+
+private:
+    int roomWidth;
+    int roomHeight;
+    int noOfBoxes;
+    int noOfLevels;
+    int difficulty;
+    int percentage;
+
+    std::vector<Level> levels;
+    std::vector<Level> patterns;
 
 signals:
     void changeProgressBar(float);
