@@ -30,7 +30,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::disable3by3(QString value){
+void MainWindow::disable3by3(QString /*unused*/){
     if(ui->combo_RoomW->currentText() == "3" && roomHRemoved == false){
         qobject_cast<QStandardItemModel *> (ui->combo_RoomH->model())->item(1)->setEnabled(false);
         roomHRemoved = true;
@@ -79,8 +79,8 @@ void MainWindow::displayLevelOnScreen(int levelNum){
 //void MainWindow::displayLevel(int levelNum){
     std::vector< std::vector<char> > level = Generator.getLevel(levelNum);
 
-    for(int y = 0; y < level.size(); y++){
-        for(int x = 0; x < level[y].size(); x++){
+    for(size_t y = 0; y < level.size(); y++){
+        for(size_t x = 0; x < level[y].size(); x++){
 
             if(level[y].at(x) == '#'){
                 sprite = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/wall.png"));
@@ -189,11 +189,11 @@ void MainWindow::on_actionSave_As_triggered()
         stream << "Author: " << qgetenv("USERNAME") << "\n";
         stream << "Title: " << filepath.first() << "\n\n\n";
 
-        for(int lvlNum = 0; lvlNum < levelSet.size(); lvlNum++){
+        for(size_t lvlNum = 0; lvlNum < levelSet.size(); lvlNum++){
 
             stream << filepath.first() << " " << lvlNum + 1 << "\n\n";
-            for(int column = 0; column < levelSet[lvlNum].grid.size(); column++){
-                for(int row = 0; row < levelSet[lvlNum].grid[column].size(); row++){
+            for(size_t column = 0; column < levelSet[lvlNum].grid.size(); column++){
+                for(size_t row = 0; row < levelSet[lvlNum].grid[column].size(); row++){
                     stream << levelSet[lvlNum].grid[column][row];
                 }
                 stream << "\n";

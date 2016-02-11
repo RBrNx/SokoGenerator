@@ -43,10 +43,10 @@ public:
     void setPercentage(int value){ percentage = value; }
 
     void updatePercentage(float value){ emit changeProgressBar(value); }
-    void listLevelSet(std::vector<Level>){ for(int i = 0; i < levels.size(); i++){ emit addToList(i + 1); } }
+    void listLevelSet(std::vector<Level>){ for(size_t i = 0; i < levels.size(); i++){ emit addToList(i + 1); } }
 
     void generateLevel();
-    void generateLevel(int roomWidth, int roomHeight, int noOfBoxes, int difficulty, int levelNumber);
+    void generateLevel(int roomWidth, int roomHeight, int noOfBoxes, int difficulty);
     void clearVectors(){ levels.clear(); }
     void regenerateLevel(int lvlNum);
 
@@ -55,12 +55,13 @@ public:
     void initLevel(Level &level, int roomWidth, int roomHeight);
     void placePatterns(SokoGenerator::Level &level, int roomWidth, int roomHeight);
     void rotatePattern(TwoDVector_char &pattern, int rotation);
-    bool checkConnectivity(SokoGenerator::Level &level, int roomWidth, int roomHeight);
+    bool checkConnectivity(SokoGenerator::Level &level, int roomWidth, int roomHeight, int noOfBoxes);
     void placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidth, int roomHeight, int noOfBoxes);
     void placePlayer(SokoGenerator::Level &level, int roomWidth, int roomHeight);
     TwoDVector_char getLevel(int level) { return levels[level].grid; }
     vector<Level> getLevels() { return levels; }
     void floodfill(TwoDVector_int &level, int row, int column, int roomWidth, int roomHeigh);
+    bool neighbourCheck(SokoGenerator::Level &level, int yCoord, int xCoord);
 
     void deleteLevel(int lvlNum){ levels.erase(levels.begin() + lvlNum-1); }
 
