@@ -91,6 +91,7 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
         placePatterns(newLevel, _roomW, _roomH);
         generationSuccessful = checkConnectivity(newLevel, _roomW, _roomH);
         if(generationSuccessful) placeGoalsAndBoxes(newLevel, _roomW, _roomH, _Boxes);
+        if(generationSuccessful) placePlayer(newLevel, _roomW, _roomH);
     }
     levels.push_back(newLevel);
 }
@@ -116,8 +117,6 @@ void SokoGenerator::initLevel(SokoGenerator::Level &level, int roomWidth, int ro
         level.grid.push_back(row);
         row.clear();
     }
-
-    //level->grid[randomNumber(1, roomHeight-1)].at(randomNumber(1, roomWidth-1)) = '@';
 }
 
 void SokoGenerator::placePatterns(SokoGenerator::Level &level, int roomWidth, int roomHeight){
@@ -279,8 +278,64 @@ void SokoGenerator::placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidt
             goalsPlaced = true;
         }
     }
+
+    while(!boxesPlaced){
+        xCoord = randomNumber(1, roomWidth);
+        yCoord = randomNumber(1, roomHeight);
+        if(level.grid[yCoord][xCoord] == FLOOR){
+            level.grid[yCoord][xCoord] = BOX;
+            boxCount++;
+        }
+        else if(level.grid[yCoord][xCoord] == GOAL){
+            level.grid[yCoord][xCoord] = BOXONGOAL;
+            boxCount++;
+        }
+        if(boxCount == noOfBoxes){
+            boxesPlaced = true;
+        }
+    }
+}
+void SokoGenerator::placePlayer(SokoGenerator::Level &level, int roomWidth, int roomHeight){
+    bool playerPlaced = false;
+    int xCoord, yCoord;
+
+    while(!playerPlaced){
+        xCoord = randomNumber(1, roomWidth);
+        yCoord = randomNumber(1, roomHeight);
+        if(level.grid[yCoord][xCoord] == FLOOR){
+            level.grid[yCoord][xCoord] = PLAYER;
+            playerPlaced = true;
+        }
+        else if(level.grid[yCoord][xCoord] == GOAL){
+            level.grid[yCoord][xCoord] = PONGOAL;
+            playerPlaced = true;
+        }
+    }
 }
 
 void SokoGenerator::regenerateLevel(int lvlNum){
+    bool generationSuccessful = false;
+    Level newLevel;
 
+    while(!generationSuccessful){
+        newLevel.grid.clear();
+        int _roomW, _roomH, _Boxes, _difficulty;
+        if(noOfBoxes == 0){ _Boxes = randomNumber(1, 3); } else { _Boxes = noOfBoxes; }
+        if(difficulty == 0){ _difficulty = randomNumber(1, 5); } else { _difficulty = difficulty; }
+        if(roomWidth == 0){ _roomW = randomNumber(3, 12, 3); } else { _roomW = roomWidth; }
+        if(roomHeight == 0){
+            if(_roomW == 3){ _roomH = randomNumber(6, 12, 3); }
+            else { _roomH = randomNumber(3, 12, 3); }
+        }
+        else {
+            _roomH = roomHeight;
+        }
+
+        initLevel(newLevel, _roomW, _roomH);
+        placePatterns(newLevel, _roomW, _roomH);
+        generationSuccessful = checkConnectivity(newLevel, _roomW, _roomH);
+        if(generationSuccessful) placeGoalsAndBoxes(newLevel, _roomW, _roomH, _Boxes);
+    }
+    levels.erase(levels.begin() + lvlNum);
+    levels.insert(levels.begin() + lvlNum, newLevel);
 }

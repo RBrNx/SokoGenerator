@@ -22,7 +22,8 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    void displayLevel(int levelNum);
+    void displayLevelOnScreen(int levelNum);
+    //void displayLevel(int levelNum);
     ~MainWindow();
 
 private slots:
@@ -45,6 +46,8 @@ private:
     QGraphicsPixmapItem *sprite;
     QGraphicsPixmapItem *sprite2;
 
+    bool display = true;
+
     bool roomWRemoved = false;
     bool roomHRemoved = false;
     void regenerateLevel(int lvlNum);
@@ -52,7 +55,8 @@ private:
 private slots:
     void changeProgressBar(float);
     void addToList(int);
-    void displayLevel(QListWidgetItem*);
+    void displayLevel(int);
+    //void displayLevel(QListWidgetItem*);
     void disable3by3(QString);
     void on_actionClose_triggered();
     void on_actionNew_triggered();
