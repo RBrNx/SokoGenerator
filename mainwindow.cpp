@@ -215,7 +215,7 @@ void MainWindow::rightClickMenu(const QPoint &pos){
     QAction* rightClickItem = submenu.exec(PItem);
     if(rightClickItem && rightClickItem->text().contains("Delete Level")){
         QListWidgetItem* item = ui->list_LevelSet->takeItem(ui->list_LevelSet->indexAt(pos).row());
-        Generator.deleteLevel(item->data(Qt::UserRole).toInt());
+        Generator.deleteLevel(item->data(Qt::UserRole).toInt()+1);
         for(int i = 0; i < ui->list_LevelSet->count(); i++){
             ui->list_LevelSet->item(i)->setData(Qt::UserRole, i);
             ui->list_LevelSet->item(i)->setText("Level " + QString::number(i+1));
