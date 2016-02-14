@@ -104,7 +104,7 @@ void MainWindow::displayLevelOnScreen(int levelNum){
             }
             else if(level[y].at(x) == '*'){
                 sprite = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/goal.png"));
-                sprite2 = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/box.png"));
+                sprite2 = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/box_shipped.png"));
             }
             else if(level[y].at(x) == '.'){
                 sprite = new QGraphicsPixmapItem(QPixmap(":/tileset/textures/goal.png"));;
