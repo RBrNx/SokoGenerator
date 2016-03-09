@@ -1,20 +1,25 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "sokogenerator.h"
+#include "boostsolver.h"
+#include "sokosolver.h"
 #include <iostream>
 
 SokoGenerator Generator;
+boostsolver solver;
 
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    ui->label_GenerationTime->setText("Estimated Generation Time: 0 Hours 0 Minutes");
+    ui->label_GenerationTime->setText("Estimated Generation Time: 00:00:00");
     ui->progressBar->setValue(0);
     ui->list_LevelSet->setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(&Generator, SIGNAL(changeProgressBar(float)), this, SLOT(changeProgressBar(float)));
     connect(&Generator, SIGNAL(addToList(int)), this, SLOT(addToList(int)));
+    connect(&Generator, SIGNAL(updateTimer(float)), this, SLOT(updateTimer(float)));
+    connect(&solver, SIGNAL(updateTimer(float)), this, SLOT(updateTimer(float)));
     connect(ui->list_LevelSet, SIGNAL(currentRowChanged(int)), this, SLOT(displayLevel(int)));
     //connect(ui->list_LevelSet, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(displayLevel(QListWidgetItem*)));
     connect(ui->combo_RoomH, SIGNAL(currentTextChanged(QString)), this, SLOT(disable3by3(QString)));
@@ -53,6 +58,12 @@ void MainWindow::disable3by3(QString /*unused*/){
 
 void MainWindow::changeProgressBar(float value){
     ui->progressBar->setValue(value);
+}
+
+void MainWindow::updateTimer(float timer){
+    int seconds = ((int)timer / 1000) % 60 ;
+    int minutes = ((int)timer / (1000*60)) % 60;
+    ui->label_GenerationTime->setText("Current Generation Time: 00:" + QString(minutes) + ":" + QString(seconds));
 }
 
 void MainWindow::addToList(int value){
@@ -149,11 +160,13 @@ void MainWindow::on_combo_Difficulty_currentIndexChanged(int index)
 
 void MainWindow::on_generateButton_released()
 {
+    //*Solver = new SokoSolver();
     display = false;
     Generator.clearVectors();
     ui->list_LevelSet->clear();
     display = true;
     Generator.generateLevel();
+    //delete Solver;
 }
 
 void MainWindow::on_actionClose_triggered()
@@ -200,6 +213,7 @@ void MainWindow::on_actionSave_As_triggered()
             }
             stream << "\n\n\n";
             stream << "Solution/Moves\n";
+            stream << levelSet[lvlNum].solution.c_str();
             stream << "\n\n\n";
         }
 

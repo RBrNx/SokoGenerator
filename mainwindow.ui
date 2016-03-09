@@ -160,7 +160,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Estimated Generation Time:</string>
+     <string>Current Generation Time:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_Percentage">

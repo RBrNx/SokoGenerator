@@ -9,6 +9,8 @@
 #include <time.h>
 #include <queue>
 #include <tuple>
+#include <chrono>
+#include "boostsolver.h"
 
 using namespace std;
 
@@ -25,11 +27,14 @@ class SokoGenerator : public QObject{
     Q_OBJECT
     typedef vector<vector<char>> TwoDVector_char;
     typedef vector<vector<int>> TwoDVector_int;
+    typedef std::chrono::steady_clock::time_point time;
+    typedef std::chrono::duration<int, std::milli> millisecs_t;
 
 
 public:
     struct Level {
         TwoDVector_char grid;
+        string solution;
     };
 
     explicit SokoGenerator(QObject *parent = 0);
@@ -62,6 +67,7 @@ public:
     vector<Level> getLevels() { return levels; }
     void floodfill(TwoDVector_int &level, int row, int column, int roomWidth, int roomHeigh);
     bool neighbourCheck(SokoGenerator::Level &level, int yCoord, int xCoord);
+    string convertBoardToString(SokoGenerator::Level level);
 
     void deleteLevel(int lvlNum){ levels.erase(levels.begin() + lvlNum-1); }
 
@@ -72,13 +78,16 @@ private:
     int noOfLevels;
     int difficulty;
     int percentage;
+   time start;
 
     std::vector<Level> levels;
     std::vector<Level> patterns;
+    boostsolver *solver = new boostsolver();
 
 signals:
     void changeProgressBar(float);
     void addToList(int);
+    void updateTimer(float);
 
 };
 

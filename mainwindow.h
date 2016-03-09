@@ -11,6 +11,7 @@
 #include <QFileDialog>
 #include <QStandardPaths>
 #include <QFile>
+#include <chrono>
 
 namespace Ui {
 class MainWindow;
@@ -19,6 +20,7 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+    typedef std::chrono::steady_clock::time_point time;
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -56,6 +58,7 @@ private slots:
     void changeProgressBar(float);
     void addToList(int);
     void displayLevel(int);
+    void updateTimer(float);
     //void displayLevel(QListWidgetItem*);
     void disable3by3(QString);
     void on_actionClose_triggered();

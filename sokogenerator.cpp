@@ -2,6 +2,7 @@
 #include "mainwindow.h"
 #include <QMessageBox>
 
+
 SokoGenerator::SokoGenerator(QObject *parent):QObject(parent){
     roomHeight = 0;
     roomWidth = 0;
@@ -42,7 +43,7 @@ SokoGenerator::SokoGenerator(QObject *parent):QObject(parent){
 }
 
 SokoGenerator::~SokoGenerator(){
-
+    delete solver;
 }
 
 int SokoGenerator::randomNumber(int min, int max, int divisor){
@@ -55,11 +56,12 @@ int SokoGenerator::randomNumber(int min, int max, int divisor){
 }
 
 void SokoGenerator::generateLevel(){
-    srand(time(NULL));
+    srand(std::time(NULL));
     int _levels;
 
     if(noOfLevels == 0){ _levels = randomNumber(1, 20); } else { _levels = noOfLevels; }
 
+    start = std::chrono::steady_clock::now();
     for(int i = 0; i < _levels; i++){
         generateLevel(roomWidth, roomHeight, noOfBoxes, difficulty);
         float perc = ((i + 1) * 100) / _levels;
@@ -72,8 +74,12 @@ void SokoGenerator::generateLevel(){
 void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, int difficulty){
     bool generationSuccessful = false;
     Level newLevel;
+    int counter = 0;
 
     while(!generationSuccessful){
+        time currentTime = std::chrono::steady_clock::now();
+        millisecs_t duration( std::chrono::duration_cast<millisecs_t>(currentTime - start));
+        updateTimer(duration.count());
         newLevel.grid.clear();
         int _roomW, _roomH, _Boxes, _difficulty;
         if(noOfBoxes == 0){ _Boxes = randomNumber(1, 3); } else { _Boxes = noOfBoxes; }
@@ -92,6 +98,20 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
         generationSuccessful = checkConnectivity(newLevel, _roomW, _roomH, _Boxes);
         if(generationSuccessful) placeGoalsAndBoxes(newLevel, _roomW, _roomH, _Boxes);
         if(generationSuccessful) placePlayer(newLevel, _roomW, _roomH);
+        if(generationSuccessful){
+            string board = convertBoardToString(newLevel);
+            solver->board(board);
+            string solution = solver->solve(start);
+            if(solution == "No Solution"){
+                generationSuccessful = false;
+                counter++;
+                cout << solution << " " << counter << endl;
+            }
+            else{
+                newLevel.solution = solution;
+                cout << "Level Generated" << endl;
+            }
+        }
     }
     levels.push_back(newLevel);
 }
@@ -376,4 +396,17 @@ void SokoGenerator::regenerateLevel(int lvlNum){
     }
     levels.erase(levels.begin() + lvlNum);
     levels.insert(levels.begin() + lvlNum, newLevel);
+}
+
+string SokoGenerator::convertBoardToString(SokoGenerator::Level level){
+    string board;
+
+    for(int column = 0; column < level.grid.size(); column++){
+        for(int row = 0; row < level.grid[column].size(); row++){
+            board += level.grid[column][row];
+        }
+        board += "\n";
+    }
+
+    return board;
 }
