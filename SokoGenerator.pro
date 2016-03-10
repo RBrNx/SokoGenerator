@@ -17,8 +17,6 @@ QMAKE_CFLAGS += -std=c99
 SOURCES += main.cpp\
         mainwindow.cpp \
     sokogenerator.cpp \
-    sokosolver.cpp \
-    boostsolver.cpp \
     solvercpp/allocator.c \
     solvercpp/crs.c \
     solvercpp/deadlock_table.c \
@@ -35,8 +33,6 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     sokogenerator.h \
-    sokosolver.h \
-    boostsolver.h \
     solvercpp/allocator.h \
     solvercpp/crs.h \
     solvercpp/deadlock_table.h \
