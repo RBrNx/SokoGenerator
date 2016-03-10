@@ -99,7 +99,7 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
         if(generationSuccessful) placeGoalsAndBoxes(newLevel, _roomW, _roomH, _Boxes);
         if(generationSuccessful) placePlayer(newLevel, _roomW, _roomH);
         if(generationSuccessful){
-            string board = convertBoardToString(newLevel);
+            /*string board = convertBoardToString(newLevel);
             solver->board(board);
             string solution = solver->solve(start);
             if(solution == "No Solution"){
@@ -110,7 +110,9 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
             else{
                 newLevel.solution = solution;
                 cout << "Level Generated" << endl;
-            }
+            }*/
+            level lvl = LevelToCLevel(newLevel);
+            generationSuccessful = solver->solve(lvl, start);
         }
     }
     levels.push_back(newLevel);
@@ -409,4 +411,24 @@ string SokoGenerator::convertBoardToString(SokoGenerator::Level level){
     }
 
     return board;
+}
+
+level SokoGenerator::LevelToCLevel(SokoGenerator::Level lvl){
+    level newLevel;
+
+    for(int column = 0; column < lvl.grid.size(); column++){
+        for(int row = 0; row < lvl.grid[column].size(); row++){
+            newLevel.f[column][row] = lvl.grid[column][row];
+            if(newLevel.f[column][row] == '@'){
+                newLevel.sx = row;
+                newLevel.sy = column;
+            }
+        }
+    }
+
+    newLevel.width = lvl.grid[0].size();
+    newLevel.height = lvl.grid.size();
+    newLevel.next_level = NULL;
+
+    return newLevel;
 }

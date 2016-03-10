@@ -11,6 +11,7 @@
 #include <tuple>
 #include <chrono>
 #include "boostsolver.h"
+#include "solvercpp/solver.h"
 
 using namespace std;
 
@@ -68,6 +69,7 @@ public:
     void floodfill(TwoDVector_int &level, int row, int column, int roomWidth, int roomHeigh);
     bool neighbourCheck(SokoGenerator::Level &level, int yCoord, int xCoord);
     string convertBoardToString(SokoGenerator::Level level);
+    level LevelToCLevel(SokoGenerator::Level lvl);
 
     void deleteLevel(int lvlNum){ levels.erase(levels.begin() + lvlNum-1); }
 
@@ -82,7 +84,9 @@ private:
 
     std::vector<Level> levels;
     std::vector<Level> patterns;
-    boostsolver *solver = new boostsolver();
+    //boostsolver *solver = new boostsolver();
+    Solver *solver = new Solver();
+
 
 signals:
     void changeProgressBar(float);

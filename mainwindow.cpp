@@ -3,10 +3,11 @@
 #include "sokogenerator.h"
 #include "boostsolver.h"
 #include "sokosolver.h"
+#include "solvercpp/solver.h"
 #include <iostream>
 
 SokoGenerator Generator;
-boostsolver solver;
+Solver solver;
 
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindow)
 {
@@ -61,9 +62,12 @@ void MainWindow::changeProgressBar(float value){
 }
 
 void MainWindow::updateTimer(float timer){
+    //QString number = QString("%1").arg(myNumber, 2, 10, QChar('0'));
     int seconds = ((int)timer / 1000) % 60 ;
     int minutes = ((int)timer / (1000*60)) % 60;
-    ui->label_GenerationTime->setText("Current Generation Time: 00:" + QString(minutes) + ":" + QString(seconds));
+    QString padSeconds = QString("%1").arg(seconds, 2, 10, QChar('0'));
+    QString padMinutes = QString("%1").arg(minutes, 2, 10, QChar('0'));
+    ui->label_GenerationTime->setText("Current Generation Time: 00:" + padMinutes + ":" + padSeconds);
 }
 
 void MainWindow::addToList(int value){
