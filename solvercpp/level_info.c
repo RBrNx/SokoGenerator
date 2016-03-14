@@ -25,17 +25,17 @@ static int art[MAXFIELDS]; // 1 - for an articulation
 
 void preprocess_level() // precalculate everything for the full_board
 {
-	add_outside_walls();
-	remove_dead_ends();
-	count_boxes_and_goals();
-	calculate_magic_numbers();
-	set_field_numbers(); 
-	calculate_distances();
-	set_dead_fields_and_goal_distances();
-	copy_to_info();
+    add_outside_walls();
+    remove_dead_ends();
+    count_boxes_and_goals();
+    calculate_magic_numbers();
+    set_field_numbers();
+    calculate_distances();
+    set_dead_fields_and_goal_distances();
+    copy_to_info();
 #ifdef USE_TUNNELS
-	find_articulations();
-	calculate_tunnels();
+    find_articulations();
+    calculate_tunnels();
 #endif
 }
 
@@ -54,11 +54,12 @@ static void add_outside_walls() // we add walls outside, to the fields unreachab
 {
 	memset(reachable, 0, sizeof(int)*LVLSIZE*LVLSIZE);
 
-	reachable[lvl.sy][lvl.sx] = 1;
-	int first = 0; int last = 1;
+    reachable[lvl.sy][lvl.sx] = 1;
+    int first = 0; int last = 1;
 	search_queue[0] = genpos(lvl.sx,lvl.sy);
 	while (first < last)
 	{
+        if(DOUT)printf("Add Outside Walls \n");
 		int x = xpos(search_queue[first]);
 		int y = ypos(search_queue[first++]);
 		
@@ -81,7 +82,7 @@ static void add_outside_walls() // we add walls outside, to the fields unreachab
 				if (has_empty_goal_on(lvl.f[y][x]) || has_unplaced_box_on(lvl.f[y][x]))
 					solvable = 0;
 				lvl.f[y][x] = set_wall();
-			}
+            }
 }
 
 static void remove_dead_ends() // remove fields surrounded by three walls
@@ -89,6 +90,7 @@ static void remove_dead_ends() // remove fields surrounded by three walls
 	int has_dead_end;
 	do
 	{
+        if(DOUT)printf("Remove Dead Ends \n");
 		has_dead_end = 0;
 
 		for (int y = 1; y < lvl.height-1; y++)
@@ -198,6 +200,7 @@ static void calculate_distances() // calculate distances of all pair of squares
 			
 		while (first < last)
 		{
+            if(DOUT)printf("Calculate Distances \n");
 			int x = xpos(search_queue[first]);
 			int y = ypos(search_queue[first++]);
 			int dist = tmp_info.pd[source][tmp_info.fn[y][x]];
@@ -289,6 +292,7 @@ static int level_components()
 				search_queue[0] = genpos(x,y);
 				while (first < last)
 				{
+                    if(DOUT)printf("Level Components \n");
 					int x = xpos(search_queue[first]);
 					int y = ypos(search_queue[first++]);
 					
@@ -344,7 +348,8 @@ static void calculate_tunnels()
 		{
 			x1 = x;
 			while (is_box_placeable(lvl.f[y][x]) && info.tunnel[info.fn[y][x]] == 2)
-				x++;
+                x++;
+                if(DOUT)printf("Calculate Tunnels 2 \n");
 			x2 = x-1;
 			if (x2 < x1)
 			{
@@ -413,6 +418,7 @@ static void calculate_tunnels()
 			y1 = y;
 			while (is_box_placeable(lvl.f[y][x]) && info.tunnel[info.fn[y][x]] == 1)
 				y++;
+                if(DOUT)printf("Calculate Tunnels 1 \n");
 			y2 = y-1;
 			if (y2 < y1)
 			{

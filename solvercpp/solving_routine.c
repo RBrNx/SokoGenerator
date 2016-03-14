@@ -84,6 +84,7 @@ static void clean_routine()
 		{
 			while (!is_queue_empty(&move_queue[current_distance]))
 			{
+                if(DOUT)printf("Run Routine \n");
 				if (__builtin_expect(hash.count > HASHMAX,0))
 				{
 					solvable = 0;

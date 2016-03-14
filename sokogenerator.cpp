@@ -1,6 +1,7 @@
 #include "sokogenerator.h"
 #include "mainwindow.h"
 #include <QMessageBox>
+#include <QDebug>
 
 
 SokoGenerator::SokoGenerator(QObject *parent):QObject(parent){
@@ -99,20 +100,9 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
         if(generationSuccessful) placeGoalsAndBoxes(newLevel, _roomW, _roomH, _Boxes);
         if(generationSuccessful) placePlayer(newLevel, _roomW, _roomH);
         if(generationSuccessful){
-            /*string board = convertBoardToString(newLevel);
-            solver->board(board);
-            string solution = solver->solve(start);
-            if(solution == "No Solution"){
-                generationSuccessful = false;
-                counter++;
-                cout << solution << " " << counter << endl;
-            }
-            else{
-                newLevel.solution = solution;
-                cout << "Level Generated" << endl;
-            }*/
             level lvl = LevelToCLevel(newLevel);
             generationSuccessful = solver->solve(lvl, start);
+            qDebug() << "Generation Successful: " << generationSuccessful;
         }
     }
     levels.push_back(newLevel);
@@ -400,19 +390,6 @@ void SokoGenerator::regenerateLevel(int lvlNum){
     levels.insert(levels.begin() + lvlNum, newLevel);
 }
 
-string SokoGenerator::convertBoardToString(SokoGenerator::Level level){
-    string board;
-
-    for(int column = 0; column < level.grid.size(); column++){
-        for(int row = 0; row < level.grid[column].size(); row++){
-            board += level.grid[column][row];
-        }
-        board += "\n";
-    }
-
-    return board;
-}
-
 level SokoGenerator::LevelToCLevel(SokoGenerator::Level lvl){
     level newLevel;
 
@@ -423,12 +400,41 @@ level SokoGenerator::LevelToCLevel(SokoGenerator::Level lvl){
                 newLevel.sx = row;
                 newLevel.sy = column;
             }
+            else if(newLevel.f[column][row] == '+'){
+                newLevel.sx = row;
+                newLevel.sy = column;
+            }
         }
     }
 
+    /*char arr[11][11] = {
+        { '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', },
+        { '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', },
+        { '#', ' ', '#', ' ', ' ', ' ', ' ', '.', '#', '#', '#', },
+        { '#', ' ', ' ', ' ', '*', ' ', '#', '@', ' ', ' ', '#', },
+        { '#', '#', '$', ' ', '#', '#', '#', '#', ' ', '#', '#', },
+        { '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', },
+        { '#', '#', '#', '#', '#', '#', '#', '#', ' ', ' ', '#', },
+        { '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', },
+        { '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', },
+        { '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', },
+        { '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', }
+    };
+
+    for(int i = 0; i < 11; i++){
+        for(int j = 0; j < 11; j++){
+            newLevel.f[i][j] = arr[i][j];
+        }
+    }
+    newLevel.width = 11;
+    newLevel.height = 11;
+    newLevel.sx = 7;
+    newLevel.sy = 3;
+    newLevel.next_level = NULL;*/
     newLevel.width = lvl.grid[0].size();
     newLevel.height = lvl.grid.size();
     newLevel.next_level = NULL;
+
 
     return newLevel;
 }

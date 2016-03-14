@@ -1,8 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "sokogenerator.h"
-#include "boostsolver.h"
-#include "sokosolver.h"
 #include "solvercpp/solver.h"
 #include <iostream>
 

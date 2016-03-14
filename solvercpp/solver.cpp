@@ -17,13 +17,14 @@ bool Solver::solve(struct level Level, std::chrono::steady_clock::time_point t)
 	
 	while (last != NULL)
 	{
+        if(DOUT)printf("Solve \n");
         std::chrono::steady_clock::time_point currentTime = std::chrono::steady_clock::now();
         millisecs_t duration( std::chrono::duration_cast<millisecs_t>(currentTime - t));
         updateTimer(duration.count());
 
 		printf("Level %d:\n", count);
 		memcpy(&lvl, last, sizeof(struct level));
-		solvable = 1;
+        solvable = 1;
 		lvl_sol.length = 0;
         preprocess_level();
         calculate_static_deadlocks();
@@ -41,7 +42,7 @@ bool Solver::solve(struct level Level, std::chrono::steady_clock::time_point t)
                     return 1;
 		}
 
-
+        if(DOUT)printf("Next Level: %p\n", last->next_level);
 		last = last->next_level;
 		count++;
 	}

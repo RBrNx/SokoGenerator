@@ -24,6 +24,7 @@ int add_to_hashtable(struct move* mov) // return 0 if hashtable already contains
 	unsigned int pos = mov->magic;
 	while (hash.data[pos % HASHSIZE] != 0)
 	{
+        if(DOUT)printf("Add to Hastable \n");
 		if (compare_moves(mov, hash.data[pos % HASHSIZE]))
 			return 0; // TODO: add replacing parent in the tree, if distance is shorter?
 		else

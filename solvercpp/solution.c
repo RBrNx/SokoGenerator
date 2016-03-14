@@ -187,6 +187,7 @@ static void add_moves_between_two_positions(struct solution* sol, struct positio
 	
 	while (last > first)
 	{
+        if(DOUT)printf("Add Moves between two positions \n");
 		sokx = xpos(queue_sok[first]);
 		soky = ypos(queue_sok[first]);
 		box = queue_box[first];
@@ -275,6 +276,7 @@ static void reachable_for_solution()
 
 	while (last > first)
 	{
+        if(DOUT)printf("Reachable for solution \n");
 		for (int i = 0; i < 4; i++)
 		{
 			int x = search_queue_x[first] + movesx[i];

@@ -212,7 +212,7 @@ static void echo_dead_positions()
 {
 	struct position original;
 	get_position(&original);
-	printf("Field numbers:\n");
+    if(DOUT)printf("Field numbers:\n");
 	for (int y = 0; y < lvl.height; y++)
 	{
 		for (int x = 0; x < lvl.width; x++)

@@ -48,5 +48,6 @@ extern const int movesy[8];
 
 #define USE_PI_CORRALS
 #define USE_TUNNELS
+#define DOUT 0
 
 #endif // SOKOBAN_SOLVER_GLOBAL

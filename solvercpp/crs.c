@@ -53,6 +53,7 @@ static void calculate_reachable_squares() // calculate reachable squares and cre
 	search_queue_y[0] = lvl.sy;
 	while (first < last)
 	{
+        if(DOUT) printf("Calculate Reachable Squares \n");
 		int x = search_queue_x[first];
 		int y = search_queue_y[first++];
 		
@@ -104,6 +105,7 @@ static void run_corral_bfs(int x, int y, int value)
 	reachable[y][x] = value;
 	while (first < last)
 	{
+        if(DOUT)printf("Run Corral BFS \n");
 		x = search_queue_x[first];
 		y = search_queue_y[first++];
 		
@@ -186,6 +188,7 @@ static void calculate_areas()
 
 static void run_reachable_bfs(int x, int y, int value)
 {
+    if(DOUT)printf("Run Reachable BFS \n");
 	int first = 0; int last = 1;
 	search_queue_x[0] = x;
 	search_queue_y[0] = y;
