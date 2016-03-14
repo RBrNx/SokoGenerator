@@ -11,6 +11,8 @@
 #include <QFileDialog>
 #include <QStandardPaths>
 #include <QFile>
+#include <QThread>
+#include <QTimer>;
 #include <chrono>
 
 namespace Ui {
@@ -54,6 +56,8 @@ private:
     bool roomHRemoved = false;
     void regenerateLevel(int lvlNum);
 
+    QThread thread;
+    QTimer *timer = new QTimer(this);
 private slots:
     void changeProgressBar(float);
     void addToList(int);

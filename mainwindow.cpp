@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindo
     connect(&Generator, SIGNAL(changeProgressBar(float)), this, SLOT(changeProgressBar(float)));
     connect(&Generator, SIGNAL(addToList(int)), this, SLOT(addToList(int)));
     connect(&Generator, SIGNAL(updateTimer(float)), this, SLOT(updateTimer(float)));
-    connect(&solver, SIGNAL(updateTimer(float)), this, SLOT(updateTimer(float)));
+    //connect(&solver, SIGNAL(updateTimer(float)), this, SLOT(updateTimer(float)));
     connect(ui->list_LevelSet, SIGNAL(currentRowChanged(int)), this, SLOT(displayLevel(int)));
     //connect(ui->list_LevelSet, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(displayLevel(QListWidgetItem*)));
     connect(ui->combo_RoomH, SIGNAL(currentTextChanged(QString)), this, SLOT(disable3by3(QString)));
@@ -27,6 +27,9 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindo
 
     scene = new QGraphicsScene(this);
     ui->graphicsView->setScene(scene);
+
+    Generator.setupForThread(thread);
+    Generator.moveToThread(&thread);
 }
 
 MainWindow::~MainWindow()
@@ -60,12 +63,16 @@ void MainWindow::changeProgressBar(float value){
 }
 
 void MainWindow::updateTimer(float timer){
-    //QString number = QString("%1").arg(myNumber, 2, 10, QChar('0'));
-    int seconds = ((int)timer / 1000) % 60 ;
-    int minutes = ((int)timer / (1000*60)) % 60;
-    QString padSeconds = QString("%1").arg(seconds, 2, 10, QChar('0'));
-    QString padMinutes = QString("%1").arg(minutes, 2, 10, QChar('0'));
-    ui->label_GenerationTime->setText("Current Generation Time: 00:" + padMinutes + ":" + padSeconds);
+    //int seconds = ((int)timer / 1000) % 60 ;
+    //int minutes = ((int)timer / (1000*60)) % 60;
+    //QString padSeconds = QString("%1").arg(seconds, 2, 10, QChar('0'));
+    //QString padMinutes = QString("%1").arg(minutes, 2, 10, QChar('0'));
+    //ui->label_GenerationTime->setText("Current Generation Time: 00:" + padMinutes + ":" + padSeconds);
+
+    //QTime currentTime = QTime::currentTime();
+    //QTime diffTime = currentTime - startTime;
+    //QString timeString = diffTime.toString("hh : mm : ss");
+    //ui->label_GenerationTime->setText("Current Generation Time: " + timeString);
 }
 
 void MainWindow::addToList(int value){
@@ -162,13 +169,12 @@ void MainWindow::on_combo_Difficulty_currentIndexChanged(int index)
 
 void MainWindow::on_generateButton_released()
 {
-    //*Solver = new SokoSolver();
     display = false;
     Generator.clearVectors();
     ui->list_LevelSet->clear();
     display = true;
-    Generator.generateLevel();
-    //delete Solver;
+    //startTime = QTime::currentTime();
+    thread.start();
 }
 
 void MainWindow::on_actionClose_triggered()

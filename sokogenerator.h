@@ -41,6 +41,8 @@ public:
     explicit SokoGenerator(QObject *parent = 0);
     ~SokoGenerator();
 
+    void setupForThread(QThread &thread);
+    void initialSetup();
     void setRoomWidth(int value){ roomWidth = value; }
     void setRoomHeight(int value){ roomHeight = value; }
     void setBoxes(int value){ noOfBoxes = value; }
@@ -84,12 +86,15 @@ private:
     std::vector<Level> levels;
     std::vector<Level> patterns;
     Solver solver;
-    QThread thread;
 
 signals:
     void changeProgressBar(float);
     void addToList(int);
     void updateTimer(float);
+    void threadFinished();
+
+private slots:
+    void startThreadWork();
 
 };
 
