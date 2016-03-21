@@ -3,7 +3,7 @@
 
 #include "level.h"
 
-#define MAXFIELDS 128
+#define MAXFIELDS 500
 
 struct level_info // level with other precalculated things
 {

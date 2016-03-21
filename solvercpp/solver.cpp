@@ -4,24 +4,19 @@ Solver::Solver(QObject *parent):QObject(parent){
 
 }
 
-bool Solver::solve(struct level Level, std::chrono::steady_clock::time_point t)
+bool Solver::solve(struct level Level, float t)
 {
-    //srand(time(0));
     initialize_allocator();
 
-    //struct level* levels = load_xsb_levels(Level);
     struct level* levels = new level[1];
     levels[0] = Level;
 	struct level* last = levels;
 	int count = 1;
+    timeout = t;
 	
-	while (last != NULL)
+    while (last != NULL && !threadStop)
 	{
         if(DOUT)printf("Solve \n");
-        std::chrono::steady_clock::time_point currentTime = std::chrono::steady_clock::now();
-        millisecs_t duration( std::chrono::duration_cast<millisecs_t>(currentTime - t));
-        updateTimer(duration.count());
-
 		printf("Level %d:\n", count);
 		memcpy(&lvl, last, sizeof(struct level));
         solvable = 1;

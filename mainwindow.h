@@ -57,18 +57,25 @@ private:
     void regenerateLevel(int lvlNum);
 
     QThread thread;
-    QTimer *timer = new QTimer(this);
+    QTime Time;
+    QTimer timer;
+
 private slots:
     void changeProgressBar(float);
     void addToList(int);
     void displayLevel(int);
-    void updateTimer(float);
-    //void displayLevel(QListWidgetItem*);
+    void updateTimer();
     void disable3by3(QString);
     void on_actionClose_triggered();
     void on_actionNew_triggered();
     void on_actionSave_As_triggered();
     void rightClickMenu(const QPoint&);
+    void stopTimer();
+    void on_spin_TimeLimit_valueChanged(double arg1);
+    void resetGUI();
+
+signals:
+    void stopThread();
 };
 
 #endif // MAINWINDOW_H

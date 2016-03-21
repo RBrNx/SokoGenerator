@@ -36,10 +36,13 @@ public:
     struct Level {
         TwoDVector_char grid;
         string solution;
+        int generationTime;
     };
 
     explicit SokoGenerator(QObject *parent = 0);
     ~SokoGenerator();
+
+    Solver solver;
 
     void setupForThread(QThread &thread);
     void initialSetup();
@@ -49,6 +52,7 @@ public:
     void setLevels(int value){ noOfLevels = value; }
     void setDifficulty(int value){ difficulty = value; }
     void setPercentage(int value){ percentage = value; }
+    void setTimeout(float timeLimit){ timeout = timeLimit; }
 
     void updatePercentage(float value){ emit changeProgressBar(value); }
     void listLevelSet(std::vector<Level>){ for(size_t i = 0; i < levels.size(); i++){ emit addToList(i + 1); } }
@@ -81,21 +85,24 @@ private:
     int noOfLevels;
     int difficulty;
     int percentage;
-   time start;
+    float timeout;
+    time start;
 
     std::vector<Level> levels;
     std::vector<Level> patterns;
-    Solver solver;
+
+public:
+    bool stopThread = 0;
 
 signals:
     void changeProgressBar(float);
     void addToList(int);
-    void updateTimer(float);
+    void updateTimer();
     void threadFinished();
+    void resetGUI();
 
 private slots:
     void startThreadWork();
-
 };
 
 #endif // SOKOGENERATOR_H

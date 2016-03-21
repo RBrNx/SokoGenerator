@@ -23,8 +23,11 @@ int boxy[MAXFIELDS];
 int box_count;
 
 int solvable = 1; // 0/1
-struct move* solution = 0; 
+struct move* solution = 0;
+float timeout = 0;
 
 const int movesx[8] = {-1,0,1,0,-1,0,1,0};
 const int movesy[8] = {0,1,0,-1,0,1,0,-1};
+
+bool threadStop = 0;
 

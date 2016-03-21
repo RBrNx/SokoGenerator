@@ -1,26 +1,24 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "sokogenerator.h"
-#include "solvercpp/solver.h"
 #include <iostream>
 
 SokoGenerator Generator;
-Solver solver;
-
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    ui->label_GenerationTime->setText("Estimated Generation Time: 00:00:00");
+    ui->label_GenerationTime->setText("Current Generation Time: 00:00:00");
     ui->progressBar->setValue(0);
     ui->list_LevelSet->setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(&Generator, SIGNAL(changeProgressBar(float)), this, SLOT(changeProgressBar(float)));
     connect(&Generator, SIGNAL(addToList(int)), this, SLOT(addToList(int)));
-    connect(&Generator, SIGNAL(updateTimer(float)), this, SLOT(updateTimer(float)));
-    //connect(&solver, SIGNAL(updateTimer(float)), this, SLOT(updateTimer(float)));
+    connect(&Generator, SIGNAL(updateTimer()), this, SLOT(updateTimer()));
+    connect(&thread, SIGNAL(finished()), this, SLOT(stopTimer()));
+    connect(&timer, SIGNAL(timeout()), this, SLOT(updateTimer()));
+    connect(&Generator, SIGNAL(resetGUI()), this, SLOT(resetGUI()));
     connect(ui->list_LevelSet, SIGNAL(currentRowChanged(int)), this, SLOT(displayLevel(int)));
-    //connect(ui->list_LevelSet, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(displayLevel(QListWidgetItem*)));
     connect(ui->combo_RoomH, SIGNAL(currentTextChanged(QString)), this, SLOT(disable3by3(QString)));
     connect(ui->combo_RoomW, SIGNAL(currentTextChanged(QString)), this, SLOT(disable3by3(QString)));
     connect(ui->list_LevelSet, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(rightClickMenu(QPoint)));
@@ -62,32 +60,38 @@ void MainWindow::changeProgressBar(float value){
     ui->progressBar->setValue(value);
 }
 
-void MainWindow::updateTimer(float timer){
-    //int seconds = ((int)timer / 1000) % 60 ;
-    //int minutes = ((int)timer / (1000*60)) % 60;
-    //QString padSeconds = QString("%1").arg(seconds, 2, 10, QChar('0'));
-    //QString padMinutes = QString("%1").arg(minutes, 2, 10, QChar('0'));
-    //ui->label_GenerationTime->setText("Current Generation Time: 00:" + padMinutes + ":" + padSeconds);
+void MainWindow::updateTimer(){
+    int diffTime = Time.elapsed();
+    int millis =  (int)diffTime % 1000;
+    int seconds = ((int)diffTime / 1000) % 60 ;
+    int minutes = ((int)diffTime / (1000*60)) % 60;
+    QString padMillis = QString("%1").arg(millis, 3, 10, QChar('0'));
+    QString padSeconds = QString("%1").arg(seconds, 2, 10, QChar('0'));
+    QString padMinutes = QString("%1").arg(minutes, 2, 10, QChar('0'));
+    ui->label_GenerationTime->setText("Current Generation Time: " + padMinutes + ":" + padSeconds + ":" + padMillis);
+}
 
-    //QTime currentTime = QTime::currentTime();
-    //QTime diffTime = currentTime - startTime;
-    //QString timeString = diffTime.toString("hh : mm : ss");
-    //ui->label_GenerationTime->setText("Current Generation Time: " + timeString);
+void MainWindow::stopTimer(){
+    timer.stop();
 }
 
 void MainWindow::addToList(int value){
-    ui->list_LevelSet->addItem("Level " + QString::number(value));
+    vector<SokoGenerator::Level> levels = Generator.getLevels();
+    int millis = levels[value-1].generationTime % 1000;
+    int seconds = ((int)levels[value-1].generationTime / 1000) % 60 ;
+    int minutes = ((int)levels[value-1].generationTime / (1000*60)) % 60;
+    QString padMillis = QString("%1").arg(millis, 3, 10, QChar('0'));
+    QString padSeconds = QString("%1").arg(seconds, 2, 10, QChar('0'));
+    QString padMinutes = QString("%1").arg(minutes, 2, 10, QChar('0'));
+    ui->list_LevelSet->addItem("Level " + QString::number(value) + " - " + padMinutes + ":" + padSeconds + ":" + padMillis);
     QVariant dataValue(value-1);
     ui->list_LevelSet->item(value-1)->setData(Qt::UserRole, dataValue);
 }
 
 void MainWindow::displayLevel(int value){
-//void MainWindow::displayLevel(QListWidgetItem* item){
     if (display){
         scene->clear();
-        //int value = item->data(Qt::UserRole).toInt();
         displayLevelOnScreen(value);
-        //displayLevel(value);
 
         QRectF bounds = scene->itemsBoundingRect();
         ui->graphicsView->fitInView(bounds, Qt::KeepAspectRatio);
@@ -96,7 +100,6 @@ void MainWindow::displayLevel(int value){
 }
 
 void MainWindow::displayLevelOnScreen(int levelNum){
-//void MainWindow::displayLevel(int levelNum){
     std::vector< std::vector<char> > level = Generator.getLevel(levelNum);
 
     for(size_t y = 0; y < level.size(); y++){
@@ -159,7 +162,7 @@ void MainWindow::on_combo_RoomW_currentIndexChanged(int index)
 
 void MainWindow::on_combo_Boxes_currentIndexChanged(int index)
 {
-    Generator.setBoxes(index);
+    Generator.setBoxes(index+2);
 }
 
 void MainWindow::on_combo_Difficulty_currentIndexChanged(int index)
@@ -170,10 +173,15 @@ void MainWindow::on_combo_Difficulty_currentIndexChanged(int index)
 void MainWindow::on_generateButton_released()
 {
     display = false;
+    Generator.solver.setThreadStop(false);
+    timer.stop();
     Generator.clearVectors();
     ui->list_LevelSet->clear();
+    scene->clear();
+    ui->progressBar->setValue(0);
     display = true;
-    //startTime = QTime::currentTime();
+    timer.start();
+    Time.start();
     thread.start();
 }
 
@@ -184,6 +192,13 @@ void MainWindow::on_actionClose_triggered()
 
 void MainWindow::on_actionNew_triggered()
 {
+    Generator.solver.setThreadStop(true);
+    if(thread.isFinished()){
+        resetGUI();
+    }
+}
+
+void MainWindow::resetGUI(){
     display = false;
     scene->clear();
     ui->list_LevelSet->clear();
@@ -193,6 +208,8 @@ void MainWindow::on_actionNew_triggered()
     ui->combo_Levels->setCurrentIndex(0);
     ui->combo_RoomH->setCurrentIndex(0);
     ui->combo_RoomW->setCurrentIndex(0);
+    timer.stop();
+    ui->label_GenerationTime->setText("Current Generation Time: 00:00:00");
     display = true;
 }
 
@@ -255,4 +272,9 @@ void MainWindow::rightClickMenu(const QPoint &pos){
 
 void MainWindow::regenerateLevel(int lvlNum){
     Generator.regenerateLevel(lvlNum);
+}
+
+void MainWindow::on_spin_TimeLimit_valueChanged(double timeLimit)
+{
+    Generator.setTimeout(timeLimit);
 }

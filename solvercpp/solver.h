@@ -25,7 +25,8 @@ class Solver : public QObject{
     Q_OBJECT
 public:
     Solver(QObject *parent = 0);
-    bool solve(level Level, std::chrono::steady_clock::time_point t);
+    bool solve(level Level, float t);
+    void setThreadStop(bool value) { threadStop = value; }
 private:
     void print_binary(unsigned int x);
 signals:

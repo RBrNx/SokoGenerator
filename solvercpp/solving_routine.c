@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "global.h"
 #include "allocator.h"
 #include "solving_routine.h"
@@ -79,11 +80,19 @@ static void clean_routine()
 
 	static void run_routine()
 	{
+        clock_t start = clock(), diff;
 		new_move = malloc_move();
 		for (; current_distance < MAXDISTANCE; current_distance++)
 		{
-			while (!is_queue_empty(&move_queue[current_distance]))
+            while (!is_queue_empty(&move_queue[current_distance]) && !threadStop)
 			{
+                diff = clock() - start;
+                int msec = diff * 1000 / CLOCKS_PER_SEC;
+                float min = msec / 1000;
+                if(timeout != 0 && min >= timeout){
+                    return 0;
+                }
+
                 if(DOUT)printf("Run Routine \n");
 				if (__builtin_expect(hash.count > HASHMAX,0))
 				{

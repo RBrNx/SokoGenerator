@@ -75,7 +75,6 @@ void SokoGenerator::generateLevel(){
 
     if(noOfLevels == 0){ _levels = randomNumber(1, 20); } else { _levels = noOfLevels; }
 
-    start = std::chrono::steady_clock::now();
     for(int i = 0; i < _levels; i++){
         generateLevel(roomWidth, roomHeight, noOfBoxes, difficulty);
         float perc = ((i + 1) * 100) / _levels;
@@ -84,16 +83,19 @@ void SokoGenerator::generateLevel(){
 
     listLevelSet(levels);
     emit threadFinished();
+    if(threadStop) { emit resetGUI(); }
 }
 
 void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, int difficulty){
     bool generationSuccessful = false;
     Level newLevel;
+    QTime timer;
+    timer.start();
 
-    while(!generationSuccessful){
+    while(!generationSuccessful && !threadStop){
         newLevel.grid.clear();
         int _roomW, _roomH, _Boxes, _difficulty;
-        if(noOfBoxes == 0){ _Boxes = randomNumber(1, 3); } else { _Boxes = noOfBoxes; }
+        if(noOfBoxes == 0){ _Boxes = randomNumber(3, 6); } else { _Boxes = noOfBoxes; }
         if(difficulty == 0){ _difficulty = randomNumber(1, 5); } else { _difficulty = difficulty; }
         if(roomWidth == 0){ _roomW = randomNumber(3, 12, 3); } else { _roomW = roomWidth; }
         if(roomHeight == 0){
@@ -111,10 +113,12 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
         if(generationSuccessful) placePlayer(newLevel, _roomW, _roomH);
         if(generationSuccessful){
             level lvl = LevelToCLevel(newLevel);
-            generationSuccessful = solver.solve(lvl, start);
+            qDebug() << "Generation Started: ";
+            generationSuccessful = solver.solve(lvl, timeout);
             qDebug() << "Generation Successful: " << generationSuccessful;
         }
     }
+    newLevel.generationTime = timer.elapsed();
     levels.push_back(newLevel);
 }
 

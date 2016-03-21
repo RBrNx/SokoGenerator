@@ -8,6 +8,7 @@
 #include "deadlock_table.h"
 #include "queue.h"
 #include "solution.h"
+#include <stdbool.h>
 
 #define MAXDISTANCE 10000
 
@@ -39,6 +40,9 @@ extern struct move* solution;
 
 extern const int movesx[8];
 extern const int movesy[8];
+extern float timeout;
+
+extern bool threadStop;
 
 // global constants
 //#define WRITE_TO_STDOUT
