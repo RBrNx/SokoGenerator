@@ -84,12 +84,17 @@ static void clean_routine()
 		new_move = malloc_move();
 		for (; current_distance < MAXDISTANCE; current_distance++)
 		{
-            while (!is_queue_empty(&move_queue[current_distance]) && !threadStop)
+            while (!is_queue_empty(&move_queue[current_distance]))
 			{
                 diff = clock() - start;
                 int msec = diff * 1000 / CLOCKS_PER_SEC;
                 float min = msec / 1000;
                 if(timeout != 0 && min >= timeout){
+                    printf("Timed Out");
+                    return 0;
+                }
+
+                if(threadStop){
                     return 0;
                 }
 

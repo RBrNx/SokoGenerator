@@ -53,6 +53,7 @@ public:
     void setDifficulty(int value){ difficulty = value; }
     void setPercentage(int value){ percentage = value; }
     void setTimeout(float timeLimit){ timeout = timeLimit; }
+    void setRegenerate(bool value, int lvlNum) { regenLevel = value; regenLvlNum = lvlNum; }
 
     void updatePercentage(float value){ emit changeProgressBar(value); }
     void listLevelSet(std::vector<Level>){ for(size_t i = 0; i < levels.size(); i++){ emit addToList(i + 1); } }
@@ -87,6 +88,8 @@ private:
     int percentage;
     float timeout;
     time start;
+    bool regenLevel = false;
+    int regenLvlNum = 0;
 
     std::vector<Level> levels;
     std::vector<Level> patterns;
@@ -99,6 +102,7 @@ signals:
     void addToList(int);
     void updateTimer();
     void threadFinished();
+    void regenFinished(int);
     void resetGUI();
 
 private slots:

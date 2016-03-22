@@ -14,7 +14,8 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindo
 
     connect(&Generator, SIGNAL(changeProgressBar(float)), this, SLOT(changeProgressBar(float)));
     connect(&Generator, SIGNAL(addToList(int)), this, SLOT(addToList(int)));
-    connect(&Generator, SIGNAL(updateTimer()), this, SLOT(updateTimer()));
+    connect(&Generator, SIGNAL(regenFinished(int)), this, SLOT(displayLevel(int)));
+    connect(&Generator, SIGNAL(regenFinished(int)), this, SLOT(displayLevelGenTime(int)));
     connect(&thread, SIGNAL(finished()), this, SLOT(stopTimer()));
     connect(&timer, SIGNAL(timeout()), this, SLOT(updateTimer()));
     connect(&Generator, SIGNAL(resetGUI()), this, SLOT(resetGUI()));
@@ -62,17 +63,14 @@ void MainWindow::changeProgressBar(float value){
 
 void MainWindow::updateTimer(){
     int diffTime = Time.elapsed();
-    int millis =  (int)diffTime % 1000;
-    int seconds = ((int)diffTime / 1000) % 60 ;
-    int minutes = ((int)diffTime / (1000*60)) % 60;
-    QString padMillis = QString("%1").arg(millis, 3, 10, QChar('0'));
-    QString padSeconds = QString("%1").arg(seconds, 2, 10, QChar('0'));
-    QString padMinutes = QString("%1").arg(minutes, 2, 10, QChar('0'));
-    ui->label_GenerationTime->setText("Current Generation Time: " + padMinutes + ":" + padSeconds + ":" + padMillis);
+    genTime = genTime.addMSecs(diffTime - lastTime);
+    lastTime = diffTime;
+    ui->label_GenerationTime->setText("Current Generation Time: " + genTime.toString("mm:ss:zzz"));
 }
 
 void MainWindow::stopTimer(){
     timer.stop();
+    lastTime = 0;
 }
 
 void MainWindow::addToList(int value){
@@ -97,6 +95,18 @@ void MainWindow::displayLevel(int value){
         ui->graphicsView->fitInView(bounds, Qt::KeepAspectRatio);
         ui->graphicsView->centerOn(0, 0);
     }
+}
+
+void MainWindow::displayLevelGenTime(int lvlNum){
+    vector<SokoGenerator::Level> levels = Generator.getLevels();
+    int millis = levels[lvlNum].generationTime % 1000;
+    int seconds = ((int)levels[lvlNum].generationTime / 1000) % 60 ;
+    int minutes = ((int)levels[lvlNum].generationTime / (1000*60)) % 60;
+    QString padMillis = QString("%1").arg(millis, 3, 10, QChar('0'));
+    QString padSeconds = QString("%1").arg(seconds, 2, 10, QChar('0'));
+    QString padMinutes = QString("%1").arg(minutes, 2, 10, QChar('0'));
+
+    ui->list_LevelSet->item(lvlNum)->setText("Level " + QString::number(lvlNum+1) + " - " + padMinutes + ":" + padSeconds + ":" + padMillis);
 }
 
 void MainWindow::displayLevelOnScreen(int levelNum){
@@ -264,14 +274,16 @@ void MainWindow::rightClickMenu(const QPoint &pos){
     }
     else if(rightClickItem && rightClickItem->text().contains("Regenerate Level")){
         regenerateLevel(ui->list_LevelSet->indexAt(pos).row());
-        ui->list_LevelSet->setCurrentRow(ui->list_LevelSet->indexAt(pos).row() + 1);
-        ui->list_LevelSet->setCurrentRow(ui->list_LevelSet->indexAt(pos).row());
+        displayLevel(ui->list_LevelSet->indexAt(pos).row());
     }
 
 }
 
 void MainWindow::regenerateLevel(int lvlNum){
-    Generator.regenerateLevel(lvlNum);
+    Generator.setRegenerate(true, lvlNum);
+    thread.start();
+    timer.start();
+    Time.start();
 }
 
 void MainWindow::on_spin_TimeLimit_valueChanged(double timeLimit)

@@ -60,6 +60,9 @@ private:
     QTime Time;
     QTimer timer;
 
+    QTime genTime = QTime::fromString("00:00:00:001", "hh:mm:ss:zzz");
+    int lastTime = 0;
+
 private slots:
     void changeProgressBar(float);
     void addToList(int);
@@ -73,6 +76,7 @@ private slots:
     void stopTimer();
     void on_spin_TimeLimit_valueChanged(double arg1);
     void resetGUI();
+    void displayLevelGenTime(int lvlNum);
 
 signals:
     void stopThread();

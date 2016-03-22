@@ -417,16 +417,6 @@
       <string>15</string>
      </property>
     </item>
-    <item>
-     <property name="text">
-      <string>18</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>21</string>
-     </property>
-    </item>
    </widget>
    <widget class="QComboBox" name="combo_RoomW">
     <property name="geometry">
@@ -465,16 +455,6 @@
     <item>
      <property name="text">
       <string>15</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>18</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>21</string>
      </property>
     </item>
    </widget>
