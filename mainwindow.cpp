@@ -219,6 +219,7 @@ void MainWindow::resetGUI(){
     ui->combo_Levels->setCurrentIndex(0);
     ui->combo_RoomH->setCurrentIndex(0);
     ui->combo_RoomW->setCurrentIndex(0);
+    ui->spin_TimeLimit->setValue(0);
     timer.stop();
     ui->label_GenerationTime->setText("Current Generation Time: 00:00:00");
     display = true;
@@ -259,23 +260,48 @@ void MainWindow::on_actionSave_As_triggered()
 
 void MainWindow::rightClickMenu(const QPoint &pos){
     QPoint PItem = ui->list_LevelSet->mapToGlobal(pos);
-    QMenu submenu;
-    submenu.addAction("Regenerate Level");
-    submenu.addAction("Delete Level");
-    QAction* rightClickItem = submenu.exec(PItem);
-    if(rightClickItem && rightClickItem->text().contains("Delete Level")){
-        QListWidgetItem* item = ui->list_LevelSet->takeItem(ui->list_LevelSet->indexAt(pos).row());
-        Generator.deleteLevel(item->data(Qt::UserRole).toInt()+1);
-        for(int i = 0; i < ui->list_LevelSet->count(); i++){
-            ui->list_LevelSet->item(i)->setData(Qt::UserRole, i);
-            ui->list_LevelSet->item(i)->setText("Level " + QString::number(i+1));
+    if(ui->list_LevelSet->indexAt(pos).row() >= 0){
+        QMenu submenu;
+        submenu.addAction("Regenerate Level");
+        submenu.addAction("Delete Level");
+        QAction* rightClickItem = submenu.exec(PItem);
+
+        if(rightClickItem && rightClickItem->text().contains("Delete Level")){
+            QListWidgetItem* item = ui->list_LevelSet->takeItem(ui->list_LevelSet->indexAt(pos).row());
+            if(item != NULL){
+                int levelNum = item->data(Qt::UserRole).toInt();
+                Generator.deleteLevel(levelNum);
+                vector<SokoGenerator::Level> levelSet = Generator.getLevels();
+                for(int i = levelNum; i < ui->list_LevelSet->count(); i++){
+                    ui->list_LevelSet->item(i)->setData(Qt::UserRole, i);
+
+                    int millis = levelSet[i].generationTime % 1000;
+                    int seconds = ((int)levelSet[i].generationTime / 1000) % 60 ;
+                    int minutes = ((int)levelSet[i].generationTime / (1000*60)) % 60;
+                    QString padMillis = QString("%1").arg(millis, 3, 10, QChar('0'));
+                    QString padSeconds = QString("%1").arg(seconds, 2, 10, QChar('0'));
+                    QString padMinutes = QString("%1").arg(minutes, 2, 10, QChar('0'));
+
+                    ui->list_LevelSet->item(i)->setText("Level " + QString::number(i+1) + " - " + padMinutes + ":" + padSeconds + ":" + padMillis);
+                }
+                if(item->data(Qt::UserRole).toInt() == ui->list_LevelSet->count()){
+                    ui->list_LevelSet->setCurrentRow(ui->list_LevelSet->count()-1);
+                }
+                else{
+                    ui->list_LevelSet->setCurrentRow(item->data(Qt::UserRole).toInt());
+                }
+
+                delete item;
+            }
         }
-        ui->list_LevelSet->setCurrentRow(item->data(Qt::UserRole).toInt());
-        delete item;
-    }
-    else if(rightClickItem && rightClickItem->text().contains("Regenerate Level")){
-        regenerateLevel(ui->list_LevelSet->indexAt(pos).row());
-        displayLevel(ui->list_LevelSet->indexAt(pos).row());
+        else if(rightClickItem && rightClickItem->text().contains("Regenerate Level")){
+            int row = ui->list_LevelSet->indexAt(pos).row();
+            if(row >= 0){
+                regenerateLevel(row);
+                displayLevel(row);
+            }
+        }
+
     }
 
 }

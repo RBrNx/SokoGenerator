@@ -77,7 +77,7 @@ public:
     bool neighbourCheck(SokoGenerator::Level &level, int yCoord, int xCoord);
     level LevelToCLevel(SokoGenerator::Level lvl);
 
-    void deleteLevel(int lvlNum){ levels.erase(levels.begin() + lvlNum-1); }
+    void deleteLevel(int lvlNum){ levels.erase(levels.begin() + lvlNum); }
     bool isTimeout(clock_t start, float timeout);
 
 private:
