@@ -69,8 +69,8 @@ public:
     void placePatterns(SokoGenerator::Level &level, int roomWidth, int roomHeight);
     void rotatePattern(TwoDVector_char &pattern, int rotation);
     bool checkConnectivity(SokoGenerator::Level &level, int roomWidth, int roomHeight, int noOfBoxes);
-    void placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidth, int roomHeight, int noOfBoxes);
-    void placePlayer(SokoGenerator::Level &level, int roomWidth, int roomHeight);
+    bool placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidth, int roomHeight, int noOfBoxes);
+    bool placePlayer(SokoGenerator::Level &level, int roomWidth, int roomHeight);
     TwoDVector_char getLevel(int level) { return levels[level].grid; }
     vector<Level> getLevels() { return levels; }
     void floodfill(TwoDVector_int &level, int row, int column, int roomWidth, int roomHeigh);
@@ -78,6 +78,7 @@ public:
     level LevelToCLevel(SokoGenerator::Level lvl);
 
     void deleteLevel(int lvlNum){ levels.erase(levels.begin() + lvlNum-1); }
+    bool isTimeout(clock_t start, float timeout);
 
 private:
     int roomWidth;

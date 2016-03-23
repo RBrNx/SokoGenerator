@@ -98,14 +98,10 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
     Level newLevel;
     QTime timer;
     timer.start();
-    clock_t start = clock(), diff;
+    clock_t start = clock();
 
     while(!generationSuccessful && !threadStop){
-        diff = clock() - start;
-        int msec = diff * 1000 / CLOCKS_PER_SEC;
-        float min = msec / 1000;
-        if(timeout != 0 && min >= timeout){
-            printf("Timed Out");
+        if(isTimeout(start, timeout)){
             generationSuccessful = false;
         }
 
@@ -125,8 +121,8 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
         initLevel(newLevel, _roomW, _roomH);
         placePatterns(newLevel, _roomW, _roomH);
         generationSuccessful = checkConnectivity(newLevel, _roomW, _roomH, _Boxes);
-        if(generationSuccessful) placeGoalsAndBoxes(newLevel, _roomW, _roomH, _Boxes);
-        if(generationSuccessful) placePlayer(newLevel, _roomW, _roomH);
+        if(generationSuccessful) generationSuccessful = placeGoalsAndBoxes(newLevel, _roomW, _roomH, _Boxes);
+        if(generationSuccessful) generationSuccessful = placePlayer(newLevel, _roomW, _roomH);
         if(generationSuccessful){
             level lvl = LevelToCLevel(newLevel);
             qDebug() << "Generation Started: ";
@@ -314,12 +310,17 @@ void SokoGenerator::floodfill(TwoDVector_int &level, int row, int column, int ro
     }
 }
 
-void SokoGenerator::placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidth, int roomHeight, int noOfBoxes){
+bool SokoGenerator::placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidth, int roomHeight, int noOfBoxes){
     bool goalsPlaced = false, boxesPlaced = false;
     int goalCount = 0, boxCount = 0;
     int xCoord = 0, yCoord = 0;
+    clock_t start = clock();
 
-    while(!goalsPlaced){
+    while(!goalsPlaced && !threadStop){
+        if(isTimeout(start, timeout)){
+            break;
+        }
+
         xCoord = randomNumber(1, roomWidth);
         yCoord = randomNumber(1, roomHeight);
         if(level.grid[yCoord][xCoord] == FLOOR){
@@ -331,7 +332,10 @@ void SokoGenerator::placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidt
         }
     }
 
-    while(!boxesPlaced){
+    while(!boxesPlaced && !threadStop){
+        if(isTimeout(start, timeout)){
+            break;
+        }
         xCoord = randomNumber(1, roomWidth);
         yCoord = randomNumber(1, roomHeight);
         if(level.grid[yCoord][xCoord] == FLOOR){
@@ -350,12 +354,24 @@ void SokoGenerator::placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidt
             boxesPlaced = true;
         }
     }
+
+    if(boxesPlaced && goalsPlaced){
+        return true;
+    }
+    else{
+        return false;
+    }
 }
-void SokoGenerator::placePlayer(SokoGenerator::Level &level, int roomWidth, int roomHeight){
+bool SokoGenerator::placePlayer(SokoGenerator::Level &level, int roomWidth, int roomHeight){
     bool playerPlaced = false;
     int xCoord, yCoord;
+    clock_t start = clock();
 
-    while(!playerPlaced){
+    while(!playerPlaced && !threadStop){
+        if(isTimeout(start, timeout)){
+            break;
+        }
+
         xCoord = randomNumber(1, roomWidth);
         yCoord = randomNumber(1, roomHeight);
         if(level.grid[yCoord][xCoord] == FLOOR){
@@ -367,6 +383,8 @@ void SokoGenerator::placePlayer(SokoGenerator::Level &level, int roomWidth, int 
             playerPlaced = true;
         }
     }
+
+    return playerPlaced;
 }
 
 bool SokoGenerator::neighbourCheck(SokoGenerator::Level &level, int yCoord, int xCoord){
@@ -399,7 +417,7 @@ void SokoGenerator::regenerateLevel(int lvlNum){
     QTime timer;
     timer.start();
 
-    while(!generationSuccessful){
+    while(!generationSuccessful && !threadStop){
         newLevel.grid.clear();
         int _roomW, _roomH, _Boxes, _difficulty;
         if(noOfBoxes == 0){ _Boxes = randomNumber(3, 6); } else { _Boxes = noOfBoxes; }
@@ -477,4 +495,15 @@ level SokoGenerator::LevelToCLevel(SokoGenerator::Level lvl){
 
 
     return newLevel;
+}
+
+bool SokoGenerator::isTimeout(clock_t start, float timeout){
+    clock_t diff = clock() - start;
+    int msec = diff * 1000 / CLOCKS_PER_SEC;
+    float min = msec / 1000;
+    if(timeout != 0 && min >= timeout){
+        return true;
+    }
+
+    return false;
 }

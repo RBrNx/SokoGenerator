@@ -185,6 +185,7 @@ void MainWindow::on_generateButton_released()
     display = false;
     Generator.solver.setThreadStop(false);
     timer.stop();
+    genTime = QTime::fromString("00:00:00:001", "hh:mm:ss:zzz");
     Generator.clearVectors();
     ui->list_LevelSet->clear();
     scene->clear();
