@@ -264,6 +264,7 @@ void MainWindow::rightClickMenu(const QPoint &pos){
         QMenu submenu;
         submenu.addAction("Regenerate Level");
         submenu.addAction("Delete Level");
+        submenu.addAction("View Solution");
         QAction* rightClickItem = submenu.exec(PItem);
 
         if(rightClickItem && rightClickItem->text().contains("Delete Level")){
@@ -299,6 +300,19 @@ void MainWindow::rightClickMenu(const QPoint &pos){
             if(row >= 0){
                 regenerateLevel(row);
                 displayLevel(row);
+            }
+        }
+        else if(rightClickItem && rightClickItem->text().contains("View Solution")){
+            int row = ui->list_LevelSet->indexAt(pos).row();
+            if(row >= 0){
+                vector<SokoGenerator::Level> levelSet = Generator.getLevels();
+                QString solution = QString::fromStdString(levelSet[row].solution);
+                for(int i = 0; i < solution.length(); i++){
+                    if(i % 50 == 0){
+                        solution.insert(i, QChar('\n'));
+                    }
+                }
+                QMessageBox::about(this, "Level " + QString::number(row+1) + " Solution", solution);
             }
         }
 

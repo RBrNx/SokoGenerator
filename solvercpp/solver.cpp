@@ -4,7 +4,7 @@ Solver::Solver(QObject *parent):QObject(parent){
 
 }
 
-bool Solver::solve(struct level Level, float t)
+bool Solver::solve(struct level Level, float t, struct solution &sol)
 {
     initialize_allocator();
 
@@ -13,6 +13,7 @@ bool Solver::solve(struct level Level, float t)
 	struct level* last = levels;
 	int count = 1;
     timeout = t;
+    qDebug() << "Solving";
 	
     while (last != NULL && !threadStop)
 	{
@@ -31,10 +32,13 @@ bool Solver::solve(struct level Level, float t)
 		{
             try_solve_level();
 			if (solvable)
-				if (!check_solution(&lvl_sol, last,0))
+                if (!check_solution(&lvl_sol, last,0)){
 					solvable = 0;
-                else
+                }
+                else{
+                    sol = lvl_sol;
                     return 1;
+                }
 		}
 
         if(DOUT)printf("Next Level: %p\n", last->next_level);

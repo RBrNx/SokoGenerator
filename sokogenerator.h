@@ -76,6 +76,7 @@ public:
     void floodfill(TwoDVector_int &level, int row, int column, int roomWidth, int roomHeigh);
     bool neighbourCheck(SokoGenerator::Level &level, int yCoord, int xCoord);
     level LevelToCLevel(SokoGenerator::Level lvl);
+    string cSolToString(struct solution sol);
 
     void deleteLevel(int lvlNum){ levels.erase(levels.begin() + lvlNum); }
     bool isTimeout(clock_t start, float timeout);

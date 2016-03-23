@@ -125,8 +125,10 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
         if(generationSuccessful) generationSuccessful = placePlayer(newLevel, _roomW, _roomH);
         if(generationSuccessful){
             level lvl = LevelToCLevel(newLevel);
+            struct solution sol;
             qDebug() << "Generation Started: ";
-            generationSuccessful = solver.solve(lvl, timeout);
+            generationSuccessful = solver.solve(lvl, timeout, sol);
+            if(generationSuccessful) newLevel.solution = cSolToString(sol);
             qDebug() << "Generation Successful: " << generationSuccessful;
         }
     }
@@ -345,7 +347,7 @@ bool SokoGenerator::placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidt
             }
         }
         else if(level.grid[yCoord][xCoord] == GOAL){
-            if(neighbourCheck(level, yCoord, xCoord)){
+            if(neighbourCheck(level, yCoord, xCoord) && boxCount < noOfBoxes-1){
                 level.grid[yCoord][xCoord] = BOXONGOAL;
                 boxCount++;
             }
@@ -438,8 +440,10 @@ void SokoGenerator::regenerateLevel(int lvlNum){
         if(generationSuccessful) placePlayer(newLevel, _roomW, _roomH);
         if(generationSuccessful){
             level lvl = LevelToCLevel(newLevel);
+            struct solution sol;
             qDebug() << "Generation Started: ";
-            generationSuccessful = solver.solve(lvl, timeout);
+            generationSuccessful = solver.solve(lvl, timeout, sol);
+            if(generationSuccessful) newLevel.solution = cSolToString(sol);
             qDebug() << "Generation Successful: " << generationSuccessful;
         }
     }
@@ -506,4 +510,17 @@ bool SokoGenerator::isTimeout(clock_t start, float timeout){
     }
 
     return false;
+}
+
+string SokoGenerator::cSolToString(struct solution sol){
+    string characters = "ludrLUDR";
+    string solution;
+    for(int i = 0; i < MAXSOLUTION; i++){
+        char sChar = sol.move[i];
+        if(characters.find(sChar) != string::npos){
+            solution += sChar;
+        }
+    }
+
+    return solution;
 }
