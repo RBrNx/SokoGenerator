@@ -1,9 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "sokogenerator.h"
+#include "difficultyanalyser.h"
 #include <iostream>
 
 SokoGenerator Generator;
+DifficultyAnalyser diffAnanlyser;
+
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -11,6 +14,8 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindo
     ui->label_GenerationTime->setText("Current Generation Time: 00:00:00");
     ui->progressBar->setValue(0);
     ui->list_LevelSet->setContextMenuPolicy(Qt::CustomContextMenu);
+    ui->lineEdit_GeneratorSeed->setValidator(new QIntValidator(0,999999999,this));
+    ui->lineEdit_GeneratorSeed->setText(0000000000);
 
     connect(&Generator, SIGNAL(changeProgressBar(float)), this, SLOT(changeProgressBar(float)));
     connect(&Generator, SIGNAL(addToList(int)), this, SLOT(addToList(int)));
@@ -23,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindo
     connect(ui->combo_RoomH, SIGNAL(currentTextChanged(QString)), this, SLOT(disable3by3(QString)));
     connect(ui->combo_RoomW, SIGNAL(currentTextChanged(QString)), this, SLOT(disable3by3(QString)));
     connect(ui->list_LevelSet, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(rightClickMenu(QPoint)));
+    connect(&Generator, SIGNAL(displayGenSeed()), this, SLOT(displayGenSeed()));
 
     scene = new QGraphicsScene(this);
     ui->graphicsView->setScene(scene);
@@ -34,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindo
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete scene;
 }
 
 void MainWindow::disable3by3(QString /*unused*/){
@@ -81,7 +88,8 @@ void MainWindow::addToList(int value){
     QString padMillis = QString("%1").arg(millis, 3, 10, QChar('0'));
     QString padSeconds = QString("%1").arg(seconds, 2, 10, QChar('0'));
     QString padMinutes = QString("%1").arg(minutes, 2, 10, QChar('0'));
-    ui->list_LevelSet->addItem("Level " + QString::number(value) + " - " + padMinutes + ":" + padSeconds + ":" + padMillis);
+    int difficulty = diffAnanlyser.calculateDifficulty(levels[value-1]);
+    ui->list_LevelSet->addItem("Level " + QString::number(value) + " - " + padMinutes + ":" + padSeconds + ":" + padMillis + " - " + QString::number(difficulty));
     QVariant dataValue(value-1);
     ui->list_LevelSet->item(value-1)->setData(Qt::UserRole, dataValue);
 }
@@ -190,6 +198,11 @@ void MainWindow::on_generateButton_released()
     ui->list_LevelSet->clear();
     scene->clear();
     ui->progressBar->setValue(0);
+    if(ui->lineEdit_GeneratorSeed->text() != ""){
+        Generator.setGenerateSeed(genSeed);
+    } else {
+        Generator.setGenerateSeed(0);
+    }
     display = true;
     timer.start();
     Time.start();
@@ -330,4 +343,13 @@ void MainWindow::regenerateLevel(int lvlNum){
 void MainWindow::on_spin_TimeLimit_valueChanged(double timeLimit)
 {
     Generator.setTimeout(timeLimit);
+}
+
+void MainWindow::displayGenSeed(){
+    ui->lineEdit_GeneratorSeed->setText(QString::number(Generator.getGenSeed()));
+}
+
+void MainWindow::on_lineEdit_GeneratorSeed_textEdited(const QString &arg1)
+{
+    genSeed = arg1.toInt();
 }

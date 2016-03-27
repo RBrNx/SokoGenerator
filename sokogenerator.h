@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QThread>
+#include <QString>
 #include <vector>
 #include <string>
 #include <fstream>
@@ -11,6 +12,7 @@
 #include <queue>
 #include <tuple>
 #include <chrono>
+#include <random>
 #include "solvercpp/solver.h"
 
 using namespace std;
@@ -22,6 +24,7 @@ using namespace std;
 #define BOXONGOAL '*'
 #define PLAYER '@'
 #define PONGOAL '+'
+#define DEADFIELD 'x'
 
 
 class SokoGenerator : public QObject{
@@ -30,6 +33,7 @@ class SokoGenerator : public QObject{
     typedef vector<vector<int>> TwoDVector_int;
     typedef std::chrono::steady_clock::time_point time;
     typedef std::chrono::duration<int, std::milli> millisecs_t;
+    typedef unsigned long long ull;
 
 
 public:
@@ -43,6 +47,8 @@ public:
     ~SokoGenerator();
 
     Solver solver;
+    std::default_random_engine generator;
+    std::uniform_int_distribution<int> distribution;
 
     void setupForThread(QThread &thread);
     void initialSetup();
@@ -54,6 +60,7 @@ public:
     void setPercentage(int value){ percentage = value; }
     void setTimeout(float timeLimit){ timeout = timeLimit; }
     void setRegenerate(bool value, int lvlNum) { regenLevel = value; regenLvlNum = lvlNum; }
+    void setGenerateSeed(int seed){ genSeed = seed; }
 
     void updatePercentage(float value){ emit changeProgressBar(value); }
     void listLevelSet(std::vector<Level>){ for(size_t i = 0; i < levels.size(); i++){ emit addToList(i + 1); } }
@@ -63,7 +70,7 @@ public:
     void clearVectors(){ levels.clear(); }
     void regenerateLevel(int lvlNum);
 
-    int randomNumber(int min, int max, int divisor = 1);
+    ull randomNumber(ull min, ull max, int divisor = 1);
 
     void initLevel(Level &level, int roomWidth, int roomHeight);
     void placePatterns(SokoGenerator::Level &level, int roomWidth, int roomHeight);
@@ -73,10 +80,13 @@ public:
     bool placePlayer(SokoGenerator::Level &level, int roomWidth, int roomHeight);
     TwoDVector_char getLevel(int level) { return levels[level].grid; }
     vector<Level> getLevels() { return levels; }
+    int getGenSeed(){ return genSeed; }
     void floodfill(TwoDVector_int &level, int row, int column, int roomWidth, int roomHeigh);
-    bool neighbourCheck(SokoGenerator::Level &level, int yCoord, int xCoord);
+    int neighbourCheck(SokoGenerator::Level &level, int yCoord, int xCoord);
     level LevelToCLevel(SokoGenerator::Level lvl);
     string cSolToString(struct solution sol);
+    Level calcDeadFields(SokoGenerator::Level level);
+    void printLevel(SokoGenerator::Level level);
 
     void deleteLevel(int lvlNum){ levels.erase(levels.begin() + lvlNum); }
     bool isTimeout(clock_t start, float timeout);
@@ -88,6 +98,7 @@ private:
     int noOfLevels;
     int difficulty;
     int percentage;
+    int genSeed;
     float timeout;
     time start;
     bool regenLevel = false;
@@ -106,6 +117,7 @@ signals:
     void threadFinished();
     void regenFinished(int);
     void resetGUI();
+    void displayGenSeed();
 
 private slots:
     void startThreadWork();

@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     solvercpp/queue.c \
     solvercpp/solution.c \
     solvercpp/solving_routine.c \
-    solvercpp/solver.cpp
+    solvercpp/solver.cpp \
+    difficultyanalyser.cpp \
 
 HEADERS  += mainwindow.h \
     sokogenerator.h \
@@ -45,7 +46,8 @@ HEADERS  += mainwindow.h \
     solvercpp/queue.h \
     solvercpp/solution.h \
     solvercpp/solving_routine.h \
-    solvercpp/solver.h
+    solvercpp/solver.h \
+    difficultyanalyser.h \
 
 FORMS    += mainwindow.ui
 

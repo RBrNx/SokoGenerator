@@ -67,17 +67,21 @@ void SokoGenerator::initialSetup(){
     }
 }
 
-int SokoGenerator::randomNumber(int min, int max, int divisor){
-    int number = rand() % (max - min + 1)+ min;
+SokoGenerator::ull SokoGenerator::randomNumber(ull min, ull max, int divisor){
+    ull number = rand() % (max - min + 1)+ min;
 
     while(number % divisor != 0){
         number = rand() % (max - min + 1) + min;
     }
+
     return number;
 }
 
 void SokoGenerator::generateLevel(){
-    srand(std::time(NULL));
+    generator.seed(chrono::steady_clock::now().time_since_epoch().count());
+    if(genSeed == 0){ genSeed = distribution(generator); }
+    srand(genSeed);
+    emit displayGenSeed();
     int _levels;
 
     if(noOfLevels == 0){ _levels = randomNumber(1, 20); } else { _levels = noOfLevels; }
@@ -278,7 +282,7 @@ bool SokoGenerator::checkConnectivity(SokoGenerator::Level &level, int roomWidth
             }
         }
     }
-    if(floorCount > noOfBoxes + noOfBoxes + 1 + 3){ //noOfBoxes + noOfGoals + player + extra floor tiles
+    if(floorCount > noOfBoxes + noOfBoxes + 1 + 5){ //noOfBoxes + noOfGoals + player + extra floor tiles
         return true;
     }
     else{
@@ -316,7 +320,9 @@ bool SokoGenerator::placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidt
     bool goalsPlaced = false, boxesPlaced = false;
     int goalCount = 0, boxCount = 0;
     int xCoord = 0, yCoord = 0;
+    int m = 0;
     clock_t start = clock();
+    Level deadFields;
 
     while(!goalsPlaced && !threadStop){
         if(isTimeout(start, timeout)){
@@ -334,20 +340,21 @@ bool SokoGenerator::placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidt
         }
     }
 
+    deadFields = calcDeadFields(level);
+
     while(!boxesPlaced && !threadStop){
         if(isTimeout(start, timeout)){
             break;
         }
         xCoord = randomNumber(1, roomWidth);
         yCoord = randomNumber(1, roomHeight);
-        if(level.grid[yCoord][xCoord] == FLOOR){
-            if(neighbourCheck(level, yCoord, xCoord)){
-                level.grid[yCoord][xCoord] = BOX;
-                boxCount++;
-            }
+        if(deadFields.grid[yCoord][xCoord] == FLOOR){
+            level.grid[yCoord][xCoord] = BOX;
+            deadFields.grid[yCoord][xCoord] = BOX;
+            boxCount++;
         }
         else if(level.grid[yCoord][xCoord] == GOAL){
-            if(neighbourCheck(level, yCoord, xCoord) && boxCount < noOfBoxes-1){
+            if(neighbourCheck(level, yCoord, xCoord) < 2 && boxCount < noOfBoxes-1){
                 level.grid[yCoord][xCoord] = BOXONGOAL;
                 boxCount++;
             }
@@ -389,7 +396,7 @@ bool SokoGenerator::placePlayer(SokoGenerator::Level &level, int roomWidth, int 
     return playerPlaced;
 }
 
-bool SokoGenerator::neighbourCheck(SokoGenerator::Level &level, int yCoord, int xCoord){
+int SokoGenerator::neighbourCheck(SokoGenerator::Level &level, int yCoord, int xCoord){
     int neighbourWalls = 0;
 
     if(level.grid[yCoord-1][xCoord] == WALL){
@@ -405,15 +412,11 @@ bool SokoGenerator::neighbourCheck(SokoGenerator::Level &level, int yCoord, int 
         neighbourWalls++;
     }
 
-    if(neighbourWalls < 2){
-        return true;
-    }
-
-    return false;
+    return neighbourWalls;
 }
 
 void SokoGenerator::regenerateLevel(int lvlNum){
-    srand(std::time(NULL));
+    //srand(std::time(NULL));
     bool generationSuccessful = false;
     Level newLevel;
     QTime timer;
@@ -523,4 +526,32 @@ string SokoGenerator::cSolToString(struct solution sol){
     }
 
     return solution;
+}
+
+SokoGenerator::Level SokoGenerator::calcDeadFields(SokoGenerator::Level level){
+    Level deadFields = level;
+
+    for(int y = 0; y < deadFields.grid.size(); y++){
+        for(int x = 0; x < deadFields.grid[y].size(); x++){
+
+            if(deadFields.grid[y][x] == FLOOR && neighbourCheck(deadFields, y, x) > 1){
+                deadFields.grid[y][x] = DEADFIELD;
+            }
+
+        }
+    }
+
+    return deadFields;
+}
+
+void SokoGenerator::printLevel(SokoGenerator::Level level){
+    QDebug debug = qDebug();
+
+    for(int y = 0; y < level.grid.size(); y++){
+        for(int x = 0; x < level.grid[y].size(); x++){
+            char c = level.grid[y][x];
+            debug << c;
+        }
+        debug << "\n";
+    }
 }

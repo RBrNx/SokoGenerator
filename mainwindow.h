@@ -60,6 +60,8 @@ private:
     QTime Time;
     QTimer timer;
 
+    int genSeed = 0;
+
     QTime genTime = QTime::fromString("00:00:00:001", "hh:mm:ss:zzz");
     int lastTime = 0;
 
@@ -77,6 +79,9 @@ private slots:
     void on_spin_TimeLimit_valueChanged(double arg1);
     void resetGUI();
     void displayLevelGenTime(int lvlNum);
+    void displayGenSeed();
+
+    void on_lineEdit_GeneratorSeed_textEdited(const QString &arg1);
 
 signals:
     void stopThread();
