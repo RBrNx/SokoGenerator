@@ -55,6 +55,7 @@ private:
     bool roomWRemoved = false;
     bool roomHRemoved = false;
     void regenerateLevel(int lvlNum);
+    QString createSolution(int lvlNum);
 
     QThread thread;
     QTime Time;
@@ -80,6 +81,7 @@ private slots:
     void resetGUI();
     void displayLevelGenTime(int lvlNum);
     void displayGenSeed();
+
 
     void on_lineEdit_GeneratorSeed_textEdited(const QString &arg1);
 

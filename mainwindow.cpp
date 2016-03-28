@@ -318,19 +318,58 @@ void MainWindow::rightClickMenu(const QPoint &pos){
         else if(rightClickItem && rightClickItem->text().contains("View Solution")){
             int row = ui->list_LevelSet->indexAt(pos).row();
             if(row >= 0){
-                vector<SokoGenerator::Level> levelSet = Generator.getLevels();
-                QString solution = QString::fromStdString(levelSet[row].solution);
-                for(int i = 0; i < solution.length(); i++){
-                    if(i % 50 == 0){
-                        solution.insert(i, QChar('\n'));
-                    }
-                }
+                QString solution = createSolution(row);
                 QMessageBox::about(this, "Level " + QString::number(row+1) + " Solution", solution);
             }
         }
 
     }
 
+}
+
+QString MainWindow::createSolution(int lvlNum){
+    vector<SokoGenerator::Level> levelSet = Generator.getLevels();
+    QString solution = QString::fromStdString(levelSet[lvlNum].solution);
+    for(int i = 0; i < solution.length(); i++){
+        if(i % 50 == 0){
+            solution.insert(i, QChar('\n'));
+        }
+    }
+
+    solution+= "\n\n";
+    solution += "--------------------";
+    solution += "\n\n";
+
+    QString RLESolution = QString::fromStdString(levelSet[lvlNum].solution);
+    int moveCount = 0;
+    for(int i = 0; i < RLESolution.length(); i++){
+        int charCount = 1;
+        QChar C = RLESolution[i];
+
+        while(C == RLESolution[i+1]) {
+            charCount++;
+            i++;
+        }
+
+        if(charCount > 1){
+            solution += C;
+            solution += QString::number(charCount);
+            solution += "  ";
+            moveCount++;
+        }
+        else{
+            solution += C;
+            solution += "  ";
+            moveCount++;
+        }
+
+        if(moveCount % 20 == 0){
+            solution += "\n";
+        }
+
+    }
+
+    return solution;
 }
 
 void MainWindow::regenerateLevel(int lvlNum){

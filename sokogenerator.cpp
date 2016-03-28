@@ -518,7 +518,7 @@ bool SokoGenerator::isTimeout(clock_t start, float timeout){
 string SokoGenerator::cSolToString(struct solution sol){
     string characters = "ludrLUDR";
     string solution;
-    for(int i = 0; i < MAXSOLUTION; i++){
+    for(int i = 0; i < sol.length; i++){
         char sChar = sol.move[i];
         if(characters.find(sChar) != string::npos){
             solution += sChar;
