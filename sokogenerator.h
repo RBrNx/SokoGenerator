@@ -15,6 +15,8 @@
 #include <random>
 #include "solvercpp/solver.h"
 
+class DifficultyAnalyser;
+
 using namespace std;
 
 #define WALL '#'
@@ -41,12 +43,14 @@ public:
         TwoDVector_char grid;
         string solution;
         int generationTime;
+        QString difficulty;
     };
 
     explicit SokoGenerator(QObject *parent = 0);
     ~SokoGenerator();
 
     Solver solver;
+    DifficultyAnalyser* diffAnalyser;
     std::default_random_engine generator;
     std::uniform_int_distribution<int> distribution;
 
@@ -103,6 +107,8 @@ private:
     time start;
     bool regenLevel = false;
     int regenLvlNum = 0;
+
+    QString difficulties[5]  = { "Very Easy", "Easy", "Medium", "Hard", "Very Hard" };
 
     std::vector<Level> levels;
     std::vector<Level> patterns;

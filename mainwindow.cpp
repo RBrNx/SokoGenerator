@@ -1,11 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "sokogenerator.h"
-#include "difficultyanalyser.h"
 #include <iostream>
 
 SokoGenerator Generator;
-DifficultyAnalyser diffAnanlyser;
+//DifficultyAnalyser diffAnanlyser;
 
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindow)
 {
@@ -88,8 +87,8 @@ void MainWindow::addToList(int value){
     QString padMillis = QString("%1").arg(millis, 3, 10, QChar('0'));
     QString padSeconds = QString("%1").arg(seconds, 2, 10, QChar('0'));
     QString padMinutes = QString("%1").arg(minutes, 2, 10, QChar('0'));
-    int difficulty = diffAnanlyser.calculateDifficulty(levels[value-1]);
-    ui->list_LevelSet->addItem("Level " + QString::number(value) + " - " + padMinutes + ":" + padSeconds + ":" + padMillis + " - " + QString::number(difficulty));
+    QString diff = levels[value-1].difficulty;
+    ui->list_LevelSet->addItem("Level " + QString::number(value) + " - " + padMinutes + ":" + padSeconds + ":" + padMillis + " - " + diff);
     QVariant dataValue(value-1);
     ui->list_LevelSet->item(value-1)->setData(Qt::UserRole, dataValue);
 }

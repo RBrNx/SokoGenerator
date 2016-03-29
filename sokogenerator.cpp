@@ -2,6 +2,7 @@
 #include "mainwindow.h"
 #include <QMessageBox>
 #include <QDebug>
+#include "difficultyanalyser.h"
 
 
 SokoGenerator::SokoGenerator(QObject *parent):QObject(parent){
@@ -105,14 +106,16 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
     clock_t start = clock();
 
     while(!generationSuccessful && !threadStop){
-        if(isTimeout(start, timeout)){
+        if(isTimeout(start, timeout * 2)){
             generationSuccessful = false;
         }
 
         newLevel.grid.clear();
-        int _roomW, _roomH, _Boxes, _difficulty;
+        int _roomW, _roomH, _Boxes;
+        QString _difficulty;
         if(noOfBoxes == 0){ _Boxes = randomNumber(3, 6); } else { _Boxes = noOfBoxes; }
-        if(difficulty == 0){ _difficulty = randomNumber(1, 5); } else { _difficulty = difficulty; }
+        if(difficulty == 0){ difficulty = randomNumber(1, 5); } else { difficulty = difficulty; }
+        _difficulty = difficulties[difficulty-1];
         if(roomWidth == 0){ _roomW = randomNumber(3, 15, 3); } else { _roomW = roomWidth; }
         if(roomHeight == 0){
             if(_roomW == 3){ _roomH = randomNumber(6, 15, 3); }
@@ -132,7 +135,13 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
             struct solution sol;
             qDebug() << "Generation Started: ";
             generationSuccessful = solver.solve(lvl, timeout, sol);
-            if(generationSuccessful) newLevel.solution = cSolToString(sol);
+            if(generationSuccessful){
+                newLevel.solution = cSolToString(sol);
+                diffAnalyser = new DifficultyAnalyser;
+                newLevel.difficulty = diffAnalyser->calculateDifficulty(newLevel);
+                if(newLevel.difficulty != _difficulty){ generationSuccessful = false; }
+                delete diffAnalyser;
+            }
             qDebug() << "Generation Successful: " << generationSuccessful;
         }
     }
@@ -325,7 +334,7 @@ bool SokoGenerator::placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidt
     Level deadFields;
 
     while(!goalsPlaced && !threadStop){
-        if(isTimeout(start, timeout)){
+        if(isTimeout(start, timeout * 2)){
             break;
         }
 
@@ -343,7 +352,7 @@ bool SokoGenerator::placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidt
     deadFields = calcDeadFields(level);
 
     while(!boxesPlaced && !threadStop){
-        if(isTimeout(start, timeout)){
+        if(isTimeout(start, timeout * 2)){
             break;
         }
         xCoord = randomNumber(1, roomWidth);
@@ -377,7 +386,7 @@ bool SokoGenerator::placePlayer(SokoGenerator::Level &level, int roomWidth, int 
     clock_t start = clock();
 
     while(!playerPlaced && !threadStop){
-        if(isTimeout(start, timeout)){
+        if(isTimeout(start, timeout * 2)){
             break;
         }
 
@@ -416,7 +425,9 @@ int SokoGenerator::neighbourCheck(SokoGenerator::Level &level, int yCoord, int x
 }
 
 void SokoGenerator::regenerateLevel(int lvlNum){
-    //srand(std::time(NULL));
+    generator.seed(chrono::steady_clock::now().time_since_epoch().count());
+    if(genSeed == 0){ genSeed = distribution(generator); }
+    srand(genSeed);
     bool generationSuccessful = false;
     Level newLevel;
     QTime timer;

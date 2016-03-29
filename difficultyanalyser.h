@@ -12,7 +12,7 @@ class DifficultyAnalyser : public QObject
     Q_OBJECT
 public:
     explicit DifficultyAnalyser(QObject *parent = 0);
-    int calculateDifficulty(SokoGenerator::Level level);
+    QString calculateDifficulty(SokoGenerator::Level level);
 
 private:
     int calculatePushes(string solution);

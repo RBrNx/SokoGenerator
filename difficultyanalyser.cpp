@@ -5,15 +5,36 @@ DifficultyAnalyser::DifficultyAnalyser(QObject *parent) : QObject(parent)
 
 }
 
-int DifficultyAnalyser::calculateDifficulty(SokoGenerator::Level level){
+QString DifficultyAnalyser::calculateDifficulty(SokoGenerator::Level level){
     int pushes = calculatePushes(level.solution);
     int lines = calculateLines(level.solution);
     int boxes = calculateBoxes(level);
     int score = 100 * (pushes + (4*lines) - (12*boxes));
+    int roomSize = (level.grid.size() - 2) * (level.grid[0].size() - 2);
 
-    int fC = furtherCalculations(level);
 
-    return score += fC;
+    if(score/roomSize <= 10){
+        return "Very Easy";
+    }
+    else if(score/roomSize >= 11 && score/roomSize <= 20){
+        return "Easy";
+    }
+    else if(score/roomSize >= 21 && score/roomSize <= 34){
+        return "Medium";
+    }
+    else if(score/roomSize >= 35 && score/roomSize <= 49){
+        return "Hard";
+    }
+    else if(score/roomSize >= 50){
+        return "Very Hard";
+    }
+    else{
+        return "No Value";
+    }
+
+    //int fC = furtherCalculations(level);
+
+    //return score/roomSize; //+= fC;
 }
 
 int DifficultyAnalyser::calculatePushes(string solution){
