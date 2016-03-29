@@ -1,4 +1,4 @@
-# SokoGenerator
+<img src="http://redbarongames.co.uk/Github/Images/logo.png">
 
 <img src="http://redbarongames.co.uk/Github/Images/Sokoban-Welcome.png" align="center">
 
