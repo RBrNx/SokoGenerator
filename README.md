@@ -1,5 +1,7 @@
 # SokoGenerator
 
+<img src="http://redbarongames.co.uk/Github/Images/Sokoban-Welcome.png" align="center">
+
 SokoGenerator is a free, open source level generator for the game 'Sokoban' with the following features:
 * **Customisable Number of Levels**
 * **Customisable Level Height/Width**
