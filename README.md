@@ -52,6 +52,9 @@ These are all ideas that I am working on or wanting to work on in the future. An
 <br><br>
 <a name="download"></a>
 ## Download SokoGenerator
+<a href="https://github.com/RBrNx/SokoGenerator/releases/download/1.0/SokoGenerator-1.0-Setup.exe">SokoGenerator 1.0 Install Wizard</a>
+<a href="https://github.com/RBrNx/SokoGenerator/releases/download/1.0/SokoGenerator.exe">SokoGenerator 1.0 Portable .exe</a>
+
 
 <br><br>
 <a name="help"></a>
