@@ -24,6 +24,7 @@ SokoGenerator is a free, open source level generator for the game 'Sokoban' with
 <a name="changelog"></a>
 ## What's new in SokoGenerator 1.0
 <b>29 March 2016</b>
+
 This is the intial release of SokoGenerator. Everything the program is currently capable of is here:
 * **Customisable Number of Levels**
 * **Customisable Level Height/Width**
