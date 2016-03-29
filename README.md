@@ -32,7 +32,7 @@ This is the intial release of SokoGenerator. Everything the program is currently
 * **Customisable Seed for Level Generation**
 * **Regenerate or Delete unwanted Levels**
 * **Save Level Set to a .sok file to be loaded by your favourite Sokoban application**
-* **Difficulty Rating calculated for each Level
+* **Difficulty Rating calculated for each Level**
 
 This program will be updated periodically with Bug Fixes and new Features.
 
