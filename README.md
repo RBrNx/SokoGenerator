@@ -38,7 +38,7 @@ This is the intial release of SokoGenerator. Everything the program is currently
 This program will be updated periodically with Bug Fixes and new Features.
 
 <br><br>
-<a name="future-ideas></a>
+<a name="future-ideas"></a>
 ## Future Ideas
 
 * ** 'Open' dialog for users to load a .sok file, allowing Regeneration/Deletion of Levels in the Level Set**
