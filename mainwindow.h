@@ -85,6 +85,8 @@ private slots:
 
     void on_lineEdit_GeneratorSeed_textEdited(const QString &arg1);
 
+    void on_actionAbout_SokoGenerator_triggered();
+
 signals:
     void stopThread();
 };

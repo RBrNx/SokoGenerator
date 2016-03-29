@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindo
     ui->label_GenerationTime->setText("Current Generation Time: 00:00:00");
     ui->progressBar->setValue(0);
     ui->list_LevelSet->setContextMenuPolicy(Qt::CustomContextMenu);
-    ui->lineEdit_GeneratorSeed->setValidator(new QIntValidator(0,999999999,this));
+    ui->lineEdit_GeneratorSeed->setValidator(new QIntValidator(0,9999999999,this));
     ui->lineEdit_GeneratorSeed->setText(0000000000);
 
     connect(&Generator, SIGNAL(changeProgressBar(float)), this, SLOT(changeProgressBar(float)));
@@ -390,4 +390,16 @@ void MainWindow::displayGenSeed(){
 void MainWindow::on_lineEdit_GeneratorSeed_textEdited(const QString &arg1)
 {
     genSeed = arg1.toInt();
+}
+
+void MainWindow::on_actionAbout_SokoGenerator_triggered()
+{
+    QMessageBox::about(this, "About SokoGenrator", "<img src=':/tileset/textures/box_shipped.png' align = 'left'></img>"
+                                                   "<p>"
+                                                   "<h2>SokoGenerator 1.0</h2>"
+                                                   "<h4>Developed by Conor Watson</h4>"
+                                                   "<h4>Special Thanks to Pavel Klavik</h4>"
+                                                   "<h4>Written using C++ and QT</h4>"
+                                                   "<h4>MIT License SokoGenerator 2016</h4>"
+                                                   "</p>");
 }

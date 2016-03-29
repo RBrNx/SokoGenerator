@@ -541,7 +541,6 @@
      <string>File</string>
     </property>
     <addaction name="actionNew"/>
-    <addaction name="actionOpen"/>
     <addaction name="separator"/>
     <addaction name="actionSave_As"/>
     <addaction name="actionClose"/>
@@ -559,11 +558,6 @@
   <action name="actionNew">
    <property name="text">
     <string>New</string>
-   </property>
-  </action>
-  <action name="actionOpen">
-   <property name="text">
-    <string>Open</string>
    </property>
   </action>
   <action name="actionSave_As">

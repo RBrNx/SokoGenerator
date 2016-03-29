@@ -80,7 +80,11 @@ SokoGenerator::ull SokoGenerator::randomNumber(ull min, ull max, int divisor){
 
 void SokoGenerator::generateLevel(){
     generator.seed(chrono::steady_clock::now().time_since_epoch().count());
-    if(genSeed == 0){ genSeed = distribution(generator); }
+    if(genSeed == 0){
+        while(genSeed > 999999999 || genSeed == 0){
+            genSeed = distribution(generator);
+        }
+    }
     srand(genSeed);
     emit displayGenSeed();
     int _levels;
@@ -114,8 +118,7 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
         int _roomW, _roomH, _Boxes;
         QString _difficulty;
         if(noOfBoxes == 0){ _Boxes = randomNumber(3, 6); } else { _Boxes = noOfBoxes; }
-        if(difficulty == 0){ difficulty = randomNumber(1, 5); } else { difficulty = difficulty; }
-        _difficulty = difficulties[difficulty-1];
+        if(difficulty != 0){ difficulty = randomNumber(1, 5); _difficulty = difficulties[difficulty-1]; }
         if(roomWidth == 0){ _roomW = randomNumber(3, 15, 3); } else { _roomW = roomWidth; }
         if(roomHeight == 0){
             if(_roomW == 3){ _roomH = randomNumber(6, 15, 3); }
@@ -139,7 +142,7 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
                 newLevel.solution = cSolToString(sol);
                 diffAnalyser = new DifficultyAnalyser;
                 newLevel.difficulty = diffAnalyser->calculateDifficulty(newLevel);
-                if(newLevel.difficulty != _difficulty){ generationSuccessful = false; }
+                if(newLevel.difficulty != _difficulty && difficulty != 0){ generationSuccessful = false; }
                 delete diffAnalyser;
             }
             qDebug() << "Generation Successful: " << generationSuccessful;
