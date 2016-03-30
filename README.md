@@ -24,18 +24,27 @@ SokoGenerator is a free, open source level generator for the game 'Sokoban' with
 
 <br><br>
 <a name="changelog"></a>
-## What's new in SokoGenerator 1.0
+## What's new in SokoGenerator 1.0.1
 <b>29 March 2016</b>
 
-This is the intial release of SokoGenerator. Everything the program is currently capable of is here:
-* **Customisable Number of Levels**
-* **Customisable Level Height/Width**
-* **Customisable Number of Boxes**
-* **Customisable Difficulty of Generated Levels**
-* **Customisable Seed for Level Generation**
-* **Regenerate or Delete unwanted Levels**
-* **Save Level Set to a .sok file to be loaded by your favourite Sokoban application**
-* **Difficulty Rating calculated for each Level**
+###Version 1.0.1
+**Bug Fixes:**
+* Reset Generator Seed on File > New
+* Generation now has it's timeout set to 1 min. The Solving Time Limit is set by the GUI Spinbox
+* Choosing a Specific Difficulty will now create Levels of that difficulty only
+* Updated Difficulty on Regeneration or Deletion will now display in the Level Set
+* Regeneration now uses proper seeding and will generate a new level every time
+
+###Version 1.0
+**This is the intial release of SokoGenerator. Everything the program is currently capable of is here:**
+* Customisable Number of Levels
+* Customisable Level Height/Width
+* Customisable Number of Boxes
+* Customisable Difficulty of Generated Levels
+* Customisable Seed for Level Generation
+* Regenerate or Delete unwanted Levels
+* Save Level Set to a .sok file to be loaded by your favourite Sokoban applicatio
+* Difficulty Rating calculated for each Level
 
 This program will be updated periodically with Bug Fixes and new Features.
 
@@ -54,10 +63,13 @@ These are all ideas that I am working on or wanting to work on in the future. An
 <br><br>
 <a name="download"></a>
 ## Download SokoGenerator
-<a href="https://github.com/RBrNx/SokoGenerator/releases/download/1.0/SokoGenerator-1.0-Setup.exe">SokoGenerator 1.0 Install Wizard</a>
+**Latest Version: SokoGenerator 1.0.1**
 <br>
-<a href="https://github.com/RBrNx/SokoGenerator/releases/download/1.0/SokoGenerator.zip">SokoGenerator 1.0 Portable .exe</a>
-
+<a href="https://github.com/RBrNx/SokoGenerator/releases/download/1.0.1/SokoGenerator-1.0.1-Setup.exe">SokoGenerator 1.0.1 Install Wizard</a>
+<br>
+<a href="https://github.com/RBrNx/SokoGenerator/releases/download/1.0.1/SokoGenerator-1.0.1.zip">SokoGenerator 1.0.1 Portable .exe</a>
+<br><br>
+<a href="https://github.com/RBrNx/SokoGenerator/releases">**Previous Verisons**</a>
 
 <br><br>
 <a name="help"></a>
