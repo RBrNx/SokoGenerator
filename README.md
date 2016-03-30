@@ -150,6 +150,7 @@ These are all ideas that I am working on or wanting to work on in the future. An
 * If a level that has been generated is unsuitable, this will regenerate the level using the same parameters that it has been generated with in the first instance.
 * Example: If the level was generated with a Room Height and Width of 6, then the resulting regenerated level will have the same Height and Width.
 * Example: If the level was generated with a "Random" Room Height and Width, then the resulting regenerated level will also use a "Random" value for the Room Height and Width, not necessarily the same one.
+* Please Note: If you change the variables after Level Set generation has finished, and then regenerate a level, the regenerated level will use the new variables instead of the variables used to generate the original level.
 <br><br>
 
 ###### Delete Level
