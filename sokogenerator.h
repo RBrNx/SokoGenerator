@@ -33,8 +33,6 @@ class SokoGenerator : public QObject{
     Q_OBJECT
     typedef vector<vector<char>> TwoDVector_char;
     typedef vector<vector<int>> TwoDVector_int;
-    typedef std::chrono::steady_clock::time_point time;
-    typedef std::chrono::duration<int, std::milli> millisecs_t;
     typedef unsigned long long ull;
 
 
@@ -104,11 +102,10 @@ private:
     int percentage;
     int genSeed;
     float timeout;
-    time start;
     bool regenLevel = false;
     int regenLvlNum = 0;
 
-    QString difficulties[5]  = { "Very Easy", "Easy", "Medium", "Hard", "Very Hard" };
+    QString difficulties[6]  = { "None", "Very Easy", "Easy", "Medium", "Hard", "Very Hard" };
 
     std::vector<Level> levels;
     std::vector<Level> patterns;

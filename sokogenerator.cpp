@@ -110,7 +110,7 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
     clock_t start = clock();
 
     while(!generationSuccessful && !threadStop){
-        if(isTimeout(start, timeout * 2)){
+        if(isTimeout(start, 1.0f)){
             generationSuccessful = false;
         }
 
@@ -118,7 +118,7 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
         int _roomW, _roomH, _Boxes;
         QString _difficulty;
         if(noOfBoxes == 0){ _Boxes = randomNumber(3, 6); } else { _Boxes = noOfBoxes; }
-        if(difficulty != 0){ difficulty = randomNumber(1, 5); _difficulty = difficulties[difficulty-1]; }
+        if(difficulty == 0) { _difficulty = difficulties[randomNumber(1, 5)]; } else { _difficulty = difficulties[difficulty]; }
         if(roomWidth == 0){ _roomW = randomNumber(3, 15, 3); } else { _roomW = roomWidth; }
         if(roomHeight == 0){
             if(_roomW == 3){ _roomH = randomNumber(6, 15, 3); }
@@ -142,7 +142,9 @@ void SokoGenerator::generateLevel(int roomWidth, int roomHeight, int noOfBoxes, 
                 newLevel.solution = cSolToString(sol);
                 diffAnalyser = new DifficultyAnalyser;
                 newLevel.difficulty = diffAnalyser->calculateDifficulty(newLevel);
-                if(newLevel.difficulty != _difficulty && difficulty != 0){ generationSuccessful = false; }
+                if(difficulty > 0){
+                    if(newLevel.difficulty != _difficulty) generationSuccessful = false;
+                }
                 delete diffAnalyser;
             }
             qDebug() << "Generation Successful: " << generationSuccessful;
@@ -337,7 +339,7 @@ bool SokoGenerator::placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidt
     Level deadFields;
 
     while(!goalsPlaced && !threadStop){
-        if(isTimeout(start, timeout * 2)){
+        if(isTimeout(start, 1.0f)){
             break;
         }
 
@@ -355,7 +357,7 @@ bool SokoGenerator::placeGoalsAndBoxes(SokoGenerator::Level &level, int roomWidt
     deadFields = calcDeadFields(level);
 
     while(!boxesPlaced && !threadStop){
-        if(isTimeout(start, timeout * 2)){
+        if(isTimeout(start, 1.0f)){
             break;
         }
         xCoord = randomNumber(1, roomWidth);
@@ -389,7 +391,7 @@ bool SokoGenerator::placePlayer(SokoGenerator::Level &level, int roomWidth, int 
     clock_t start = clock();
 
     while(!playerPlaced && !threadStop){
-        if(isTimeout(start, timeout * 2)){
+        if(isTimeout(start, 1.0f)){
             break;
         }
 
@@ -428,19 +430,29 @@ int SokoGenerator::neighbourCheck(SokoGenerator::Level &level, int yCoord, int x
 }
 
 void SokoGenerator::regenerateLevel(int lvlNum){
-    generator.seed(chrono::steady_clock::now().time_since_epoch().count());
-    if(genSeed == 0){ genSeed = distribution(generator); }
+    if(genSeed == 0){
+        while(genSeed > 999999999 || genSeed == 0){
+            genSeed = distribution(generator);
+        }
+    }
     srand(genSeed);
+    genSeed = 0;
     bool generationSuccessful = false;
     Level newLevel;
     QTime timer;
     timer.start();
+    clock_t start = clock();
 
     while(!generationSuccessful && !threadStop){
+        if(isTimeout(start, 1.0f)){
+            generationSuccessful = false;
+        }
+
         newLevel.grid.clear();
-        int _roomW, _roomH, _Boxes, _difficulty;
+        int _roomW, _roomH, _Boxes;
+        QString _difficulty;
         if(noOfBoxes == 0){ _Boxes = randomNumber(3, 6); } else { _Boxes = noOfBoxes; }
-        if(difficulty == 0){ _difficulty = randomNumber(1, 5); } else { _difficulty = difficulty; }
+        if(difficulty == 0) { _difficulty = difficulties[randomNumber(1, 5)]; } else { _difficulty = difficulties[difficulty]; }
         if(roomWidth == 0){ _roomW = randomNumber(3, 15, 3); } else { _roomW = roomWidth; }
         if(roomHeight == 0){
             if(_roomW == 3){ _roomH = randomNumber(6, 15, 3); }
@@ -460,9 +472,18 @@ void SokoGenerator::regenerateLevel(int lvlNum){
             struct solution sol;
             qDebug() << "Generation Started: ";
             generationSuccessful = solver.solve(lvl, timeout, sol);
-            if(generationSuccessful) newLevel.solution = cSolToString(sol);
+            if(generationSuccessful){
+                newLevel.solution = cSolToString(sol);
+                diffAnalyser = new DifficultyAnalyser;
+                newLevel.difficulty = diffAnalyser->calculateDifficulty(newLevel);
+                if(difficulty > 0){
+                    if(newLevel.difficulty != _difficulty) generationSuccessful = false;
+                }
+                delete diffAnalyser;
+            }
             qDebug() << "Generation Successful: " << generationSuccessful;
         }
+
     }
     newLevel.generationTime = timer.elapsed();
     levels[lvlNum] = newLevel;
@@ -486,30 +507,6 @@ level SokoGenerator::LevelToCLevel(SokoGenerator::Level lvl){
         }
     }
 
-    /*char arr[11][11] = {
-        { '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', },
-        { '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', },
-        { '#', ' ', '#', ' ', ' ', ' ', ' ', '.', '#', '#', '#', },
-        { '#', ' ', ' ', ' ', '*', ' ', '#', '@', ' ', ' ', '#', },
-        { '#', '#', '$', ' ', '#', '#', '#', '#', ' ', '#', '#', },
-        { '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', },
-        { '#', '#', '#', '#', '#', '#', '#', '#', ' ', ' ', '#', },
-        { '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', },
-        { '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', },
-        { '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', },
-        { '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', }
-    };
-
-    for(int i = 0; i < 11; i++){
-        for(int j = 0; j < 11; j++){
-            newLevel.f[i][j] = arr[i][j];
-        }
-    }
-    newLevel.width = 11;
-    newLevel.height = 11;
-    newLevel.sx = 7;
-    newLevel.sy = 3;
-    newLevel.next_level = NULL;*/
     newLevel.width = lvl.grid[0].size();
     newLevel.height = lvl.grid.size();
     newLevel.next_level = NULL;

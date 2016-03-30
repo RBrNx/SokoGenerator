@@ -6,6 +6,7 @@
         <file>textures/robot1_hold.png</file>
         <file>textures/wall.png</file>
         <file>textures/goal.png</file>
+        <file>textures/logo.png</file>
     </qresource>
     <qresource prefix="/patterns">
         <file>patterns/1.txt</file>

@@ -4,7 +4,6 @@
 #include <iostream>
 
 SokoGenerator Generator;
-//DifficultyAnalyser diffAnanlyser;
 
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindow)
 {
@@ -12,9 +11,11 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindo
 
     ui->label_GenerationTime->setText("Current Generation Time: 00:00:00");
     ui->progressBar->setValue(0);
+    ui->progressBar->setAlignment(Qt::AlignRight);
     ui->list_LevelSet->setContextMenuPolicy(Qt::CustomContextMenu);
-    ui->lineEdit_GeneratorSeed->setValidator(new QIntValidator(0,9999999999,this));
+    ui->lineEdit_GeneratorSeed->setValidator(new QIntValidator(0,999999999,this));
     ui->lineEdit_GeneratorSeed->setText(0000000000);
+    ui->spin_TimeLimit->setValue(1.00);
 
     connect(&Generator, SIGNAL(changeProgressBar(float)), this, SLOT(changeProgressBar(float)));
     connect(&Generator, SIGNAL(addToList(int)), this, SLOT(addToList(int)));
@@ -112,8 +113,8 @@ void MainWindow::displayLevelGenTime(int lvlNum){
     QString padMillis = QString("%1").arg(millis, 3, 10, QChar('0'));
     QString padSeconds = QString("%1").arg(seconds, 2, 10, QChar('0'));
     QString padMinutes = QString("%1").arg(minutes, 2, 10, QChar('0'));
-
-    ui->list_LevelSet->item(lvlNum)->setText("Level " + QString::number(lvlNum+1) + " - " + padMinutes + ":" + padSeconds + ":" + padMillis);
+    QString diff = levels[lvlNum].difficulty;
+    ui->list_LevelSet->item(lvlNum)->setText("Level " + QString::number(lvlNum+1) + " - " + padMinutes + ":" + padSeconds + ":" + padMillis + " - " + diff);
 }
 
 void MainWindow::displayLevelOnScreen(int levelNum){
@@ -231,7 +232,8 @@ void MainWindow::resetGUI(){
     ui->combo_Levels->setCurrentIndex(0);
     ui->combo_RoomH->setCurrentIndex(0);
     ui->combo_RoomW->setCurrentIndex(0);
-    ui->spin_TimeLimit->setValue(0);
+    ui->spin_TimeLimit->setValue(1.00);
+    ui->lineEdit_GeneratorSeed->setText(0000000000);
     timer.stop();
     ui->label_GenerationTime->setText("Current Generation Time: 00:00:00");
     display = true;
@@ -294,8 +296,8 @@ void MainWindow::rightClickMenu(const QPoint &pos){
                     QString padMillis = QString("%1").arg(millis, 3, 10, QChar('0'));
                     QString padSeconds = QString("%1").arg(seconds, 2, 10, QChar('0'));
                     QString padMinutes = QString("%1").arg(minutes, 2, 10, QChar('0'));
-
-                    ui->list_LevelSet->item(i)->setText("Level " + QString::number(i+1) + " - " + padMinutes + ":" + padSeconds + ":" + padMillis);
+                    QString diff = levelSet[i].difficulty;
+                    ui->list_LevelSet->item(i)->setText("Level " + QString::number(i+1) + " - " + padMinutes + ":" + padSeconds + ":" + padMillis + " - " + diff);
                 }
                 if(item->data(Qt::UserRole).toInt() == ui->list_LevelSet->count()){
                     ui->list_LevelSet->setCurrentRow(ui->list_LevelSet->count()-1);
@@ -385,6 +387,7 @@ void MainWindow::on_spin_TimeLimit_valueChanged(double timeLimit)
 
 void MainWindow::displayGenSeed(){
     ui->lineEdit_GeneratorSeed->setText(QString::number(Generator.getGenSeed()));
+    qDebug() << "Gen Seed";
 }
 
 void MainWindow::on_lineEdit_GeneratorSeed_textEdited(const QString &arg1)
@@ -394,12 +397,13 @@ void MainWindow::on_lineEdit_GeneratorSeed_textEdited(const QString &arg1)
 
 void MainWindow::on_actionAbout_SokoGenerator_triggered()
 {
-    QMessageBox::about(this, "About SokoGenrator", "<img src=':/tileset/textures/box_shipped.png' align = 'left'></img>"
-                                                   "<p>"
-                                                   "<h2>SokoGenerator 1.0</h2>"
-                                                   "<h4>Developed by Conor Watson</h4>"
-                                                   "<h4>Special Thanks to Pavel Klavik</h4>"
-                                                   "<h4>Written using C++ and QT</h4>"
-                                                   "<h4>MIT License SokoGenerator 2016</h4>"
+    QMessageBox::about(this, "About SokoGenrator", "<img src=':/tileset/textures/logo.png' align = 'left'></img>"
+                                                   "<p align = 'center'>"
+                                                   "<h2>Version 1.0.1</h2>"
+                                                   "<h4>Developed by <a href='https://github.com/RBrNx'> Conor Watson </a></h4>"
+                                                   "<h4>Special Thanks to <a href='http://pavel.klavik.cz/'> Pavel Klavik </a></h4>"
+                                                   "<h4>Developed using C++ and QT</h4>"
+                                                   "<h4>SokoGenerator Licensed under MIT 2016</h4>"
+                                                   "<h4><a href='https://github.com/RBrNx/SokoGenerator#help'>Needing Help?</a></h4>"
                                                    "</p>");
 }

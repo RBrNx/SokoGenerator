@@ -56,9 +56,4 @@ win32: RC_ICONS = SokoGenerator.ico
 RESOURCES += \
     resources.qrc
 
-INCLUDEPATH += "C:/Program Files (x86)/Java/jdk1.8.0_74/include/"
-INCLUDEPATH += "C:/Program Files (x86)/Java/jdk1.8.0_74/include/win32/"
-INCLUDEPATH += "C:/boost_1_60_0"
-LIBS += "C:/Program Files (x86)/Java/jre1.8.0_74/bin/client/jvm.dll"
-LIBS += -L"C:/Program Files (x86)/Java/jdk1.8.0_74/lib/" -ljvm
 
