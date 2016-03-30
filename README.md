@@ -11,6 +11,8 @@ SokoGenerator is a free, open source level generator for the game 'Sokoban' with
 * **Regenerate or Delete unwanted Levels**
 * **Save Level Set to a .sok file to be loaded by your favourite Sokoban application**
 
+**Compatible with:** Windows XP/Vista/7/8/10
+
 <br><br>
 ## Index
 
