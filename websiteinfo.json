@@ -1,6 +1,6 @@
 {
   "show": true,
-  "image": "img/IOT-Window@2x.png",
-  "title": "AdventOfCode2017",
-  "description": "This is a test description"
+  "image": "img/sokogenerator.png",
+  "title": "SokoGenerator",
+  "description": "SokoGenerator is a free, open source level generator for the game 'Sokoban'."
 }
