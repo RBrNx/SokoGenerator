@@ -3,7 +3,7 @@
   "imageMain": "img/sokogenerator.png",
   "imageDrop": "img/sokogenerator_2.png",
   "title": "SokoGenerator",
-  "description": "SokoGenerator is a free, open source level generator for the game 'Sokoban'."
+  "description": "SokoGenerator is a free, open source level generator for the game 'Sokoban'.",
   "carouselImages": [ "sokogenerator.png", "sokogenerator_2.png" ],
   "aboutProject": "<p>SokoGenerator is a free, Open-Source level generator for the game <strong>Sokoban</strong> which was developed as part of my Honours Project that involved research into how to algorithmically class the difficulty of a Sokoban level</p><p>The program will generate a number of levels based upon a set of variables that can be chosen by the user, and contains a Sokoban Solver so that each level is guaranteed to be solvable.</p><p>The level generating and solving algorithms are written in C++, with the Qt framework providing the UI, and is compatable with Windows 7/8/10. Any generated levels can be saved to a .sok file which can be read by most Sokoban applications.",
   "techSheet": [ "C++", "Qt Framework", "Procedural Level Generation", "Solving Algorithms" ],
