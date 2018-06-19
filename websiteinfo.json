@@ -7,7 +7,7 @@
   "carouselImages": [ "sokogenerator.png", "sokogenerator_2.png" ],
   "aboutProject": "<p>SokoGenerator is a free, Open-Source level generator for the game <strong>Sokoban</strong> which was developed as part of my <strong>Honours Project</strong> that involved research into how to algorithmically class the difficulty of a Sokoban level.</p><p>The program will generate a number of levels based upon a set of variables that can be chosen by the user, and also contains a Sokoban Solver so that each level is guaranteed to be solvable.</p><p>The level generating and solving algorithms are written in <strong>C++</strong>, with the <strong>Qt framework</strong> providing the UI, and is compatable with Windows 7/8/10. Any generated levels can be saved to a <strong>.sok</strong> file which can be read by most Sokoban applications.",
   "techSheet": [ "C++", "Qt Framework", "Procedural Level Generation", "Solving Algorithms" ],
-  "links": [ { "linkText": "SokoGenerator (Github)", "link": "https://github.com/RBrNx/SokoGenerator" },
+  "links": [ { "linkText": "SokoGenerator", "link": "https://github.com/RBrNx/SokoGenerator", "linkType": "github" },
              { "linkText": "Play Sokoban", "link": "https://sourceforge.net/projects/jsokoapplet/" }
     ]
 }
