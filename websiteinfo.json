@@ -1,7 +1,7 @@
 {
   "show": true,
-  "imageMain": "img/sokogenerator.png",
-  "imageDrop": "img/sokogenerator_2.png",
+  "imageMain": "/img/sokogenerator.png",
+  "imageDrop": "/img/sokogenerator_2.png",
   "title": "SokoGenerator",
   "description": "SokoGenerator is a free, open source level generator for the game 'Sokoban'.",
   "carouselImages": [ "sokogenerator.png", "sokogenerator_2.png" ],
